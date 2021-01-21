@@ -1,0 +1,91 @@
+CentOS 7 elasticsearch rpm 安装
+
+
+java  jdk 安装配置
+
+解压tar包
+tar -zxvf jdk-8u191-linux-x64.tar.gz
+
+复制到安装目录
+\cp -rif jdk-8u191-linux-x64 /usr/local/bin/java
+
+配置环境变量
+vi /etc/profile
+
+添加内容
+export JAVA_HOME=/usr/local/java/jdk1.8.0_191
+export JRE_HOME=${JAVA_HOME}/jre
+export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib:$CLASSPATH
+export PATH=${JAVA_HOME}:$PATH
+
+使环境变量生效
+source /etc/profile
+
+验证安装是否成功
+java 
+javac
+java -version
+
+
+[root@dlp ~]# vi /etc/yum.repos.d/elasticsearch.repo
+# create new
+[elasticsearch-6.x]
+name=Elasticsearch repository for 6.x packages
+baseurl=https://artifacts.elastic.co/packages/6.x/yum
+gpgcheck=1
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+enabled=1
+autorefresh=1
+type=rpm-md
+
+
+在线安装
+yum install perl-Digest-SHA
+[root@dlp ~]# yum -y install elasticsearch
+
+
+离线安装
+sudo rpm -ivh  perl-Digest-SHA-5.85-4.el7.x86_64.rpm
+shasum -a 512 -c elasticsearch-6.5.4.rpm.sha512 
+sudo rpm --install elasticsearch-6.5.4.rpm
+
+
+[root@dlp ~]# sudo /bin/systemctl daemon-reload
+[root@dlp ~]# sudo /bin/systemctl enable elasticsearch.service
+
+[root@dlp ~]# systemctl start elasticsearch 
+[root@dlp ~]# systemctl stop elasticsearch
+[root@dlp ~]# systemctl restart elasticsearch
+[root@dlp ~]# systemctl status elasticsearch
+
+
+//修改配置文件
+vi /etc/elasticsearch/elasticsearch.yml
+
+cluster.name: api_es.6.5.4
+node.name: 192.168.4.12_node-1
+path.data: /mnt/datadisk/elasticsearch/data
+path.logs: /var/log/elasticsearch
+http.port: 9200
+
+设置/mnt/datadisk/elasticsearch/data 目录操作权限为elasticsearch 
+
+
+//内存配置
+vi /etc/elasticsearch/jvm.options
+-Xms4g
+-Xmx4g
+
+
+//java home path
+vi /etc/sysconfig/elasticsearch
+JAVA_HOME=/usr/local/bin/java/jdk1.8.0_191
+
+
+//自定义插件复现到 /usr/share/elasticsearch/plugins
+
+
+//开启防火墙端口
+firewall-cmd --zone=public --add-port=9200/tcp --permanent
+firewall-cmd --reload
+firewall-cmd --zone=public --list-ports

@@ -1,0 +1,11 @@
+手贱想试下没有.NET FrameWork 4.6有啥影响给卸载了，后面server manager都打不开，找到一个好方法
+可以尝试一下通过cmd命令DISM启用.NET 4.6：
+
+1. 首先运行如下命令查看当前的功能安装情况
+Dism /online /Get-Features
+
+2. 然后运行下面的命令安装功能：
+Dism /online /Enable-Feature /FeatureName:NetFx4 /All
+Dism /online /Enable-Feature /FeatureName:NetFx4ServerFeatures /All
+
+同样方法吧powershell也装回来了。

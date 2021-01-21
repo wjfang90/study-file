@@ -1,0 +1,24 @@
+﻿1. 调整IIS 应用程序池队列长度应用程序池->高级设置->队列长度：65535
+
+2.调整IIS 的appConcurrentRequestLimit设置在cmd 命令行输入
+c:\windows\system32\inetsrv\appcmd.exe set config /section:serverRuntime /appConcurrentRequestLimit:100000
+
+在c:\windows\System32\inetsrv\config\applicationHost.config中可以查看到该设置：
+
+<serverRuntime appConcurrentRequestLimit="100000" /> 
+
+3. 调整machine.config中的processModel>requestQueueLimit的设置,由原来的默认5000改为100000。
+
+machine.config 在目录 c:\windows\Microsoft.net\framework64\[version]\Config\machine.config如C:\Windows\Microsoft.NET\Framework64\v4.0.30319\Config\machine.config
+
+<configuration>
+    <system.web>
+        <processModel enable="true" requestQueueLimit="100000"/>
+
+4. 修改注册表，调整IIS 支持的同时TCPIP连接数,由原来的默认5000改为100000。
+在 cmd 命令行输入
+reg add HKLM\System\CurrentControlSet\Services\HTTP\Parameters /v MaxConnections /t REG_DWORD /d 100000 
+
+5. 运行命令使用设置生效 
+开始 -> 运行 输入下面的命令
+net stop http  & net start  http & iisreset 

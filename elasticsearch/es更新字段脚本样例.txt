@@ -1,0 +1,50 @@
+select '%CURL_HOME%\curl.exe -XPOST "http://%ES_URl%/iel/iel/'+CONVERT(varchar(50),replace(gid,' ',''))+'/_update" -d "{\"doc\":{'+
+case when dbo.para_split(sort_id,'chl','sort_id','/') is null then '\"Category\":null,' else '\"Category\":[\"'+REPLACE(dbo.para_split(sort_id,'chl','sort_id','/'),',','\",\"')+'\"],' end+
+case when dbo.para_split(fdep_id,'iel','fdep_id','/') is null then '\"IssueDepartment\":null}}"' else '\"IssueDepartment\":[\"'+REPLACE(dbo.para_split(fdep_id,'iel','fdep_id','/'),',','\",\"')+'\"]}}"' end
+from bldb.ielfield where isDelete=0 and (type in ('z','1','') or type is null)
+
+
+
+SET ES_URL=192.168.0.189:9260
+%CURL_HOME%\curl.exe -XPOST "http://%ES_URl%/chl/chl/266293/_update" -d "{\"doc\":{\"EffectivenessDic\":null}}"
+%CURL_HOME%\curl.exe -XPOST "http://%ES_URl%/chl/chl/264970/_update" -d "{\"doc\":{\"EffectivenessDic\":null}}"
+%CURL_HOME%\curl.exe -XPOST "http://%ES_URl%/chl/chl/266294/_update" -d "{\"doc\":{\"EffectivenessDic\":null}}"
+%CURL_HOME%\curl.exe -XPOST "http://%ES_URl%/chl/chl/5692/_update" -d "{\"doc\":{\"EffectivenessDic\":[\"XE03\",\"XE0303\"]}}"
+%CURL_HOME%\curl.exe -XPOST "http://%ES_URl%/chl/chl/13816/_update" -d "{\"doc\":{\"EffectivenessDic\":[\"XE03\",\"XE0303\"]}}"
+%CURL_HOME%\curl.exe -XPOST "http://%ES_URl%/chl/chl/13839/_update" -d "{\"doc\":{\"EffectivenessDic\":[\"XE03\",\"XE0304\"]}}"
+%CURL_HOME%\curl.exe -XPOST "http://%ES_URl%/chl/chl/13882/_update" -d "{\"doc\":{\"EffectivenessDic\":[\"XE03\",\"XE0303\"]}}"
+
+
+select '%CURL_HOME%\curl.exe -XPOST "http://%ES_URl%/payz/payz/'+CONVERT(varchar(50),replace(CaseGid,' ',''))+'/_update" -d "{\"doc\":{\"SubjectClassification\":[\"'+REPLACE(dbo.para_split(ZhuanTiFenLei,'pal','pagefrom','/'),',','\",\"')+'\"]}}"'
+from dbo.CPGZ_backup_qt where LEN(zhuantifenlei)>0
+
+
+--linuex
+curl -XPOST 'http://192.168.0.189:9260/qikan/qikan/1510089199/_update' -d "{\"doc\":{\"InfoAuthorUnAnalyzed\":[\"Guo Jian'an\",\"Zha Qingjiu\"]}}"
+curl -XPOST 'http://192.168.0.189:9260/qikan/qikan/1510059376/_update' -d "{\"doc\":{\"InfoAuthorUnAnalyzed\":[\"Tim\",\"O\`Reilly\",\"洪波译\"]}}"
+curl -XPOST 'http://192.168.0.189:9260/qikan/qikan/1509949521/_update' -d "{\"doc\":{\"InfoAuthorUnAnalyzed\":[\"中国法学会\",\"四川省法学会联合调查组\"]}}"
+curl -XPOST 'http://192.168.0.189:9260/qikan/qikan/1509949522/_update' -d "{\"doc\":{\"InfoAuthorUnAnalyzed\":[\"中国法学会\",\"浙江省法学会联合调查组\"]}}"
+curl -XPOST 'http://192.168.0.189:9260/qikan/qikan/1509949527/_update' -d "{\"doc\":{\"InfoAuthorUnAnalyzed\":[\"《中国律师》评论员\"]}}"
+curl -XPOST 'http://192.168.0.189:9260/qikan/qikan/1510179199/_update' -d "{\"doc\":{\"InfoAuthorUnitUnAnalyzed\":[\"上海市人民检察院技术处中国刑事警察学院文件检验鉴定公安部重点实验室\",\"最高人民检察院技术信息中心\",\"最高人民检察院技术信息中心\",\"上海市人民检察院技术处\"]}}"
+curl -XPOST 'http://192.168.0.189:9260/qikan/qikan/1510179205/_update' -d "{\"doc\":{\"InfoAuthorUnitUnAnalyzed\":[\"华东政法大学刑事司法学院\",\"司法部司法鉴定科学技术研究所上海市法医学重点实验室上海市司法鉴定专业技术服务平台\",\"法部司法鉴定科学技术研究所上海市法医学重点实验室上海市司法鉴定专业技术服务平台\",\"法部司法鉴定科学技术研究所上海市法医学重点实验室上海市司法鉴定专业技术服务平台\"]}}"
+
+
+
+select 'curl -XPOST ''http://192.168.0.189:9260/qikan/qikan/'+CONVERT(varchar(50),info_id|0x5A000000)+'/_update'' -d "{\"doc\":{\"InfoAuthorUnAnalyzed\":[\"'+REPLACE(replace(chuliauthor,'`','\`'),';','\",\"')+'\"]}}"'
+from dbo.Tb_Article_Info where LEN(chuliauthor)>0 and chuliAuthor<>Info_Author
+
+select 'curl -XPOST ''http://192.168.0.189:9260/qikan/qikan/'+CONVERT(varchar(50),info_id|0x5A000000)+'/_update'' -d "{\"doc\":{\"InfoAuthorUnitUnAnalyzed\":[\"'+REPLACE(replace(chuliAuthorUnit,'`','\`'),';','\",\"')+'\"]}}"'
+from dbo.Tb_Article_Info where LEN(chuliAuthorUnit)>0 and chuliAuthorUnit<>Info_AuthorUnit
+
+select '%CURL_HOME%\curl.exe -XPOST "http://%ES_URl%/qikan/qikan/'+CONVERT(varchar(50),Info_Id|0x5A000000)+'/_update" -d "{\"doc\":{\"InfoKind\":[\"'+REPLACE(dbo.para_split(Info_Kind,'qikan','Info_Kind','/'),',','\",\"')+'\"]}}"'
+from dbo.Tb_Article_Info where LEN(info_kind)>1
+
+
+--linux
+select 'curl -XPOST "http://$ES_URl/qikan/qikan/'+CONVERT(varchar(50),gid)+'/_update" -d "{\"doc\":{\"JournalName\":\"'+journal_name+'\"}}"' as url
+from dbo.Tb_Article_mohujiansuo where LEN(journal_name)>1
+go
+
+---Content-Type header [application/x-www-form-urlencoded] is not supported 问题的解决方法：
+-H "Content-Type: application/json"
+

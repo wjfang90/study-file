@@ -1,0 +1,557 @@
+4.2.2
+【基本命令】
+date 	日期 
+cal  	日历
+bc 		计算器
+
+4.2.3
+【热键】
+tab   	命令补完；文件补齐;参数补齐（安装bash-completion）
+ctrl+c	中断当前程序
+ctrl+d  相当于 exit ，键盘输入结束，直接离开
+shift+[page up]|[pagedown] 翻页查看输出信息
+
+4.3
+【命令帮助】
+--help 查看命令参数说明 
+date --help
+
+man page  查看命令或文件格式说明  
+/usr/share/man/
+man date
+man -f man 精确查询命令名man 
+man -k man 模糊查找命名名或命令说明 man
+
+
+info page linux 查看命令或文件格式说明
+/usr/share/info/ 目录中centos7
+info info
+
+documents 主要是软件包的文档
+/usr/share/doc/
+
+
+4.4 
+nano 文本编辑器
+
+4.5 
+关机
+who 查看在线用户
+netstat -a 查看网络联机状态
+ps -aux 查看后台进程
+
+重启 root 用户
+reboot 
+halt 
+poweroff
+
+数据同步写入磁盘
+sync
+
+
+5.1 
+查看文件属性和权限
+ls -al
+[0]			[1]		[2]		[3]			[4]			[5]			[6]			[7]
+[文件类型]	[权限]	[链接]	[拥有者]	[用户组]	[文件容量]	[修改日期]	[文件名]
+
+【0文件类型】
+[文件类型（一个字符）]，目录或文件或连接等
+d directory 目录
+- 文件
+l link 链接文件
+b block 设备文件里可供存储的周边设备
+c character 表示设备文件里的串行设备,键盘、鼠标等
+
+.filename 隐藏文件
+
+【1权限】
+rwx rwx ---
+[拥有者权限(三个字符)][用户组权限(三个字符)][其它人权限(三个字符)]
+
+r  read 只读
+w  write 可写，对于文件可编辑内容，不能删除文件；对于目录可创建文件与目录、删除文件与目录(不管文件权限)、重命名文件或目录、移动目录和文件的位置
+x execure 可执行，对于目录表示能否进入该目录成为工作目录，也就是当前目录
+s  
+注意：权限3个一组，位置不变，没有权限为-
+
+
+5.2 
+修改文件属性与权限
+su - username 切换用户
+
+【chgrp】  (change group ) 修改文件所属用户组,用户组名必须在 /etc/group中
+#chgrp [-R] groupname dirname/filename
+参数
+-R 		recursive 缩写，递归的意思
+
+【chown】  (change owner)修改文件拥有者,用户名必须在/etc/passwd中   
+#chown [-R] username dirname/filename	修改拥有者
+#chown [-R] username:groupname dirname/filename 修改拥有者，同时修改用户组
+#chown [-R] username.groupname dirname/filename 修改拥有者，同时修改用户组
+#chown [-R] .groupname dirname/filename 修改用户组
+
+
+【chmod】 修改文件权限，SUID、SGID、SBIT等特性
+使用数字修改权限
+rwx --- ---
+r:4
+w:2
+x:1
+
+owner=4+2+1=7
+group=0
+others=0
+
+#chmod [-R] 700 1.txt
+
+使用符号修改权限
+
+chmod	权限组		操作		权限		目录或文件
+
+chmod	users  u    + 加入		r w d
+chmod	group  g    - 移除
+chmod	others o    = 设置
+chmod	all    a
+
+#chmod u=rwx,go=rx  1.txt	设置权限
+#chmod a+w 1.txt		所有人添加可写权限
+#chmod a-x 1.txt	     所有人删除可执行权限
+
+
+6.1 
+【目录】
+. 代表当前目录，也可以用 ./ 表示 ，也可表示执行文件，如./run.sh 表示 执行本目录下名为 run.sh的文件
+.. 代表上一层目录，也可以用 ../ 表示
+- 代表前一个工作目录
+~ 代表代表目前使用者身份所在的家目录
+~account 代表account这个使用者的家目录，account是这个账号的名称
+
+注意 . 和 .. 是所有目录下面都会存在的两个目录， / 目录的 .. 和 . 同一个目录，都表示当前目录
+
+
+【cd】  (change directory 缩写) 切换目录
+
+#cd ~ 切换到自已的家目录
+#cd  同 cd ~ ,切换到自已的家目录
+#cd - 返回上一个目录，如从/a 切换到 /b ，在b目录下执行 cd - 可以返回到a目录
+
+
+【pwd】  (print working directory 缩写) 显示当前目录
+
+参数 -P 显示真正的路径，非使用链接link的路径
+
+如/var/mail 是/var/spool/mail 的链接文件
+#pwd 	在/var/mail 目录下执行,输出/var/mail	
+#pwd -P  在/var/mail 目录下执行,输出/var/spool/mail
+
+
+【mkdir】 (make directory)建立一个新目录
+
+参数 -m 设置文件权限，不使用默认权限 umask
+参数 -p 递归创建目录,目录已存在不会报错
+# mkdir test 
+# mkdir -p  /test1/test2/test3
+# mkdir -m 755 test
+# mkdir -mp  755 /test1/test2/test3
+
+
+【rmdir】 删除一个空目录
+
+参数 -p 连同上层空目录一起删除
+
+#rm -r test 删除test目录下所有东西
+
+
+6.1.2 
+【$PATH】 执行文件路径的变量
+
+#echo $PATH 显示PATH路径，$表示后面的是变量,PATH一定是大写的，PATH中多个目录用:分隔，目录前后有顺序之分
+
+修改$PATH
+#PATH="${PATH}:/usr/bin/local"
+
+
+6.2 
+【文件与目录管理】
+
+【ls】 (list缩写) 文件或目录查看
+ls [-aAdfFhilnrRSt] filename|directory 文件与目录查看  
+ls [--color={never,auto,always}] filename|directory
+ls [--full-time={atime,ctime}] filename|directory
+
+参数  
+-a  全部文件，包含隐藏文件(.开头的文件)
+-d  仅列出目录本身，不列出目录内的文件数据
+-h  将文件容量以人类较易读的方式，显示容量单位
+-l  详细信息显示，包含文件的属性与权限等数据，可简写为 ll 命令
+
+
+【cp】 (copy缩写) 复制文件或目录
+cp [-adfilprsu] source destination     复制并重命名
+cp [options] source1 source2 source3 .... directory 复制多个源文件到目录
+
+参数
+-a 	相当于-dr --presevre=all 的意思
+-d 	若源文件为链接文件的属性（link file），则复制链接文件属性而非文件本身
+-f 	为强制(force)的意思，若目标文件已经存在 用无法开启，则删除后再尝试一次
+-i 	若目标文件(destination)已经存在时，在覆盖时会询问操作的进行
+-p 	连同文件的属性（权限、用户、时间）一起复制过去产，而非使用默认属性（常用备份）
+-r 	递归复制，用于目录的复制操作
+--presevre=all 	除了-p的权限相关参数外，还加入SELinux的属性，links、xattr等也复制，
+注意如果源文件有2个又上，则最后一个目标文件一定是directory才可以
+
+#cp ./a.txt ./b.txt  		复制一份并命名为b.txt，属性默认
+#cp -a ./a.txt ./b.txt  	复制一份并命名为b.txt，属性一样
+#cp -r /etc/ /tmp			复制目录常用-r
+#cp ./a.txt ./b.txt /tmp 	复制多个文件
+
+
+【rm】 （remove缩写） 删除文件或目录
+rm [-fir] filename|directory
+参数
+-f	就是force的意思，忽略不存在的文件，不会出现警告信息
+-i	交互模式，在删除前会询问使用者是否操作
+-r 	递归删除，最常用于删除目录，慎用
+
+#rm -i bashrc*		删除当前目录下bashrc开头的文件,root用户默认已经加入 i参数
+#\rm -r /tmp		递归删除tmp目录下所有文件和目录，并且不会询问
+#rm ./-a.txt		删除-开头的文件，-后为参数，所以添加本目录./即可
+#rm -- -a.txt		删除-开头的文件
+
+
+【mv】 （move 缩写）移动文件或目录，重命名文件或目录
+mv [-fiu] source destination
+mv [options] source1 source2 source3  .... destination
+参数
+-f		force 强制的意思，如果目标文件已存在，不会询问而直接删除
+-i		若目标文件(destination) 已经存在时，就会询问是否覆盖
+-u		update 若目标文件已存在时，且source比较新，才会更新
+
+#mkdir mvtest
+#mv bashrc mvtest		将bashrc移动到mvtest中去
+#mv mvtest mvtest2		将mvtest重命名为mvtest2，重命名有单独的rename命令，可多文件重命名
+#mv bashrc1 bashrc2 mvtest2		将bashrc1 bashrc2 移动到mvtest2目录，如果有多个源文件或目录，则最后一个目标文件一定是目录
+
+
+【获取路径文件名和目录名称】
+#basename /etc/systemfig/network	获取路径文件名，返回network
+#dirname /etc/systemfig/network	获取路径名称，返回/etc/systemfig
+
+
+6.3
+文件内容查看
+
+一次性输出全部内容
+【cat】		(concatenate 缩写)	由第一行开始显示文件内容
+
+【tac】		从最后一行开始显示，可以看出tac是cat倒着写的
+
+【nl】		显示的时候同时输出行号
+
+翻页查看
+【more】 	一页一页地显示文件内容
+
+【less】	与more类似，但是比more更好的是，它可以往前翻页
+操作选项
+/字符串 	向下查找字符串
+?字符串 	向上查找字符串
+n			重复前一个查找（与/或?有关） 	
+N			反向重复前一个查找（与/或?有关） 	
+g			前进到这个数据第一行
+G			前进到这个数据最后一行
+
+数据截取
+【head】	只看前几行
+head [-n number] filename
+#head /etc/man_db.conf	默认显示前10行
+#head -n 20 /etc/man_db.conf	显示前20行
+#head -n -100 /etc/man_db.conf	除最后100行不显示，显示前面的部分
+
+【tail】	只看后面几行
+tail [-n number] filename
+参数
+-n		后面接数字，表示显示几行的意思
+-f		表示持续刷新显示后面所接文件中的内容，要等到按下[Ctrl+c]才会结束
+
+#tail /etc/man_db.conf	默认显示后10行
+#tail -n 20 /etc/man_db.conf	显示后20行
+#tail -n +100 /etc/man_db.conf	不知道多少行，却只想列出100行以后的内容
+#tail -f /var/log/messages		持续检测内容，常用查看日志
+
+#head -n 20 /etc/man_db.conf |tail -n 10 显示/etc/man_db.conf 的第11到第20行
+
+
+【od】		以二进制方式读取文件内容
+od [-t type] filename
+参数
+type 类型
+	a 默认字符输出
+	c 以ASCII字符输出
+	
+# echo password | od -t oCc 查看password 这几个字符的ASCII对照
+
+
+【touch】 修改文件时间或创建新文件
+主要用于创建空文件或修改文件修改时间
+touch [-acdmt] filename
+
+修改时间 modification time 简写 mtime，文件内容变更的时间
+状态时间，status time 简写 ctime ,文件属性权限变更时间
+读取时间，access time 简写 atime, 文件内容被读取变更的时间
+
+参数
+-a 仅自定义access time
+-c 仅修改文件的时间，若该文件不存在则不建立新文件
+-d 后面可以接自定义日期而不用目前的日期，也可以用--date="日期或时间"
+-m 仅修改mtime
+-t 后面可以接预自定义时间而不用目前的时间，格式为[YYYYMMDDhhmm]
+
+
+一条命令在一行不能完全输入，需要换行，在第一行尾输入 \，再从下一行接着输入
+多条命令同时执行可以用分号(;)分隔
+
+#date; ls -l /etc/man_db.conf; ls -l --time=atime /etc/man_db.conf; \
+> ls -l --time=ctime /etc/man_db.conf 									显示当前时间，man_db.conf 读取时间，man_db.conf 的状态时间
+
+
+【umask】默认权限
+
+文件的默认权限没有可执行权限，为rw-rw-rw-  ，666
+目录的默认权限为rwxrwxrwx ，777
+
+一般用户的umask默认为002
+root用户的umask默认为022
+
+#umask  输出0022,第一位为特殊权限，后3位即为权限
+#umask -S 
+参数 -S （sequences 缩写）以字符方式显示，例如 u=rw,g=r,o=r
+#umask 002 设置默认权限，设置同一组用户有可写权限
+
+注意：umask 的数字指的是该默认值需要减掉的权限，权限用字符算，不用数字算，默认权限没有x,没法再减掉x权限了
+例如 默认文件权限为rw-rw-rw-,666,umask为----w--w-,022，新创建的文件默认权限为rw-r--r--,644
+	 [rw-rw-rw-]  -[----w--w-] =[rw-r--r--]=644 
+     默认目录权限为777,umask为022，新创建的目录默认权限为755
+	 [rwxrwxrwx]  -[----w--w-] =[rwx-r-xr-x]=755
+	 
+	 
+	 
+【隐藏权限】
+chattr	 (change attribute) 设置隐藏权限
+
+chattr [+-=][参数] filename|dirname
+参数
+a		当设置a这个属性后，这个文件只能增加数据，不能删除也不能修改数据，只有root才能设置这属性
+i		这个文件不能被删除、改名、设置链接，也不能写入或新增数据，只有root才能设置这属性
+
+可以设置不可以修改的属性，连文件拥有者都不能修改的属性
+注意：centos7 xfs默认文件系统，只支持部分参数，chattr 只能在ex2、ex3、ex4的linux 传统文件系统上完整生效
+
+#touch attrtest
+#chattr +i attrtest		添加隐藏属性
+#rm attrtest			root删除也失败
+#chattr -i attrtest		取消隐藏属性
+
+
+lsattr  (list attribute)查看隐藏权限
+lsattr [-adR] filename|dirname
+
+
+
+【文件特殊权限】
+【SUID】 （set UID） 当s这个标志出现在文件拥有者(owner)的x权限上时，如/usr/bin/passwd中[-rws-r-xr-x],称为被set UID，简称为SUID的特殊权限
+
+只对文件有效；
+
+SUID的权限和功能
+SUID 权限仅对二进制程序（binary program）有效；
+执行者对于该程序需要具有x的可执行权限；
+本权限仅在执行该程序的过程中有效(run-time)；
+执行者将具有该程序拥有者(owner)的权限；
+
+例如,一般用户可以修改自己账号的密码，但是不能查看[cat /etc/shadow]的原因
+一般用户对/usr/bin/passwd这个程序有x权限；
+passwd的拥有者是root；
+一般用户执行passwd的过程中，会暂时获得root权限；
+/etc/shadow 就可以被一般用户所执行的passwd修改；
+
+
+【SGID】 (set GID) 	当s这个标志出现在文件用户组(group)的x权限上时，如/usr/bin/locate中[-rwx---s--x],称为被set GID，简称为SGID的特殊权限
+
+对文件的功能
+SGID 对二进程程序有用；
+执行者对于该程序需要具有x的可执行权限；
+执行者在执行该程序的过程中获得该程序用户组的支持；
+
+对于目录的功能
+用户若对此目录具有r与x的权限时，该用户能够进入此目录；
+用户在此目录下的有效用户组(effective group)将会变成该目录的用户组；
+用途：若用户在此目录下具有w的权限(可以新建文件)，则用户所建立的新文件，该新文件的用户组与此目录的用户组相同
+
+
+【SBIT】 (set BIT) 当t这个标志出现在文件其它人(others)的x权限上时，如/tmp下目录[drwxrwxrwt],称为被set BIT，简称为SBIT的特殊权限
+
+只对目录有效；
+
+对目录的功能：
+当用户对此目录具有w、x权限，即具有写入的权限；
+当用户在该目录下建立文件或目录时，仅有自己与root才有权限删除该文件
+
+/tmp 目录的权限为[drwxrwxrwt],任何人都可以在这个目录下新增、修改文件，但仅有该文件的创建者与root才有权限删除自己的目录或文件
+
+
+【特殊权限设置】
+
+数字方式
+在一般权限数字前加一位，这个值是SUID、SGID、SBIT 的和
+SUID 4
+SGID 2
+SBIT 1
+
+# touch /tmp/test.txt
+# chmod 4755 /tmp/test.txt 							添加SUID权限
+# chmod 6755 /tmp/test.txt							添加SUID和SGID权限
+# chmod 7666 /tmp/test.txt; ll /tmp/test.txt		具有空的SUID和SGID权限，输出-rwSrwSrwT, 666表示others都没有x权限，所以S和T代表就是空权限
+
+
+字符方式
+#chmod u=rws,go=x /tmp/test.txt 	添加SUID权限
+
+
+
+
+【file】 观察文件类型，查看文件属于ASCII文件或是数据文件或二进制文件，有没有动态链接库(share library)
+
+#file ~/.bashrc    ASCII text纯文件文件
+
+
+
+
+命令与文件的查找
+
+脚本文件查找
+【which】  查找执行文件，执行文件名是完整文件名
+ which [-a] commond
+ 参数 
+ -a		将所有由PATH目录中可以找到的命令全部列出，而不止第一个被找到的命令名称
+ 
+#which ifconfig		输出 /sbin/ifconfig
+
+
+文件查找
+【find】 不常用，速度慢，影响硬盘性能，默认会查找子目录
+find [PATH] [option] [action]
+
+与时间有关参数 -mtime -atime -ctime
+-mtime  n  		n为数字，表示在n天之前的[一天之内]被修改过的内容的文件
+-mtime +n  		n为数字，表示在n天之前的[不含n天本身]被修改过的内容的文件
+-mtime -n  		n为数字，表示在n天之内的[含n天本身]被修改过的内容的文件
+-newer file  	file为一个已存在的文件，列出比file还要新的文件
+
+#find / -mtime 0 	列出系统上24小时内有修改过内容的(mtime)的文件，0代表目前的时间，所以，从现在开始到24小时前
+#find /etc/ -newer /etc/passwd		查找/etc下的文件，文件日期比/etc/passwd新的就列出
+
++4代表>=5天前的文件
+-4代表<=4天内的文件
+4 代表4~5那一天的文件
+
+
+与使用者或用户组名称相关参数
+-uid n 			n为数字，表示使用者的账号ID，即UID,记录在/etc/passwd中，与账号名称对应的数字。
+-gid n			n为数字，表示用户组名称的ID,即GID,记录在/etc/group中
+-user name 		name为使用者账号名称，例如fang
+-group name		name为用户组名称，例如users
+-nouser			查找的文件的拥有者不在/etc/passwd中
+-nogroup 		查找的文件的拥有用户组不在/etc/group中
+
+#find /home -user fang 	查找/home下属性于fang用户的文件
+#find / -nouser 		查找系统中不属于任何人的文件
+
+
+与文件权限及名称相关参数
+-name filename  查找文件名为filename的文件
+-size [+-]SIZE	查找比SIZE还要大(+)或小(-)的文件，SIZE规格有：c 代表Bytes，k 代表1024Bytes,M 代表1024k
+-type TYPE		查找文件的类型为TYPE的，类型主要有: 一般正规文件(f)，设备(b,c)，目录(d)，链接文件(l),socket(s)，及FIFO(p)等属性
+
+-perm mode		查找文件权限等于mode的文件
+-perm -mode 	查找文件权限必须要全部囊括mode的文件
+-perm /mode 	查找文件权限包含任一mode的权限的文件
+
+#find  / -name passwd 		找出文件名为passwd的文件，默认是完整文件名
+#find  / -name "*passwd*"	找出文件名包含passwd的文件，*表示任意字符
+#find / -size -50k			查找文件大小小于50k的文件
+#find /run -type s			查找/run目录下文件类型为socket的文件
+
+#find / -perm 0755			查找文件权限为-rwxr-xr-x的文件
+#find / -perm -0744			查找文件权限囊括了-rwxr--r--的文件，文件权限为-rwxr-xr--的文件也会被查到
+#find / -perm /7000			查找文件权限有包含SUID 或SGID或SBIT的文件，7000为---s--s--t			
+
+
+
+【whereis】只能打系统中某些特定目录下的文件,主要针对 /bin/sbin 下面的执行文件,/usr/share/man下面的man page文件
+whereis [-bmsu] filename|dirname
+#whereis -l 可以列出whereis 会查找的几个主要目录
+
+【locate】 利用数据库查找，速度快
+locate [-ir] keyword	keyword 可以是文件名的一部分
+参数
+-i		忽略大小写
+-c		不输出文件名，只计算找到文件数量
+-l		后面接数字，表示只输出几行，-l 5,只输出5行
+
+
+【updatedb】 根据数据库配置/etc/updatedb.conf，手动更新数据库/var/lib/mlocate内的数据库文件，locate 使用前更新最好
+
+
+
+7.Linux磁盘与文件系统管理
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

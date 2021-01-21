@@ -1,0 +1,707 @@
+1.创建版本库
+$git init			//分支名字 "master” 是当你运行 git init 时默认的起始分支名字，原因仅仅是它的广泛使用，
+
+$ git config --global user.email "1119730734@qq.com"
+$ git config --global user.name "wjfang90"
+
+
+2.跟踪文件（添加到缓存区）
+git add <file>|<path>		//命令使用文件或目录的路径作为参数；如果参数是目录的路径，该命令将递归地跟踪该目录下的所有文件
+				//踪新文件，或者把已跟踪的文件放到暂存区，还能用于合并时把有冲突的文件标记为已解决状态等
+git add --patch			//来部分暂存文件
+
+$ git add 404.html
+
+
+3.将缓存区内容添加到仓库中（提交到了 HEAD，但是还没到你的仓库）
+$ git commit -m "add 3 files."
+
+$ git commit -am "add 3 files."    //-a 选项跳过添加到缓存区，直接提交到仓库
+
+
+4.创建远程仓库
+在github上创建
+
+
+5.设置远程仓库地址
+$ git remote add origin https://github.com/wjfang90/Test.git
+
+修改远程仓库地址
+$ git remote set-url origin https://github.com/wjfang90/Test.git
+
+
+6.提交到远端仓库
+$ git push origin master
+
+
+7.基本操作
+
+7.1
+git config --list 命令来列出所有 Git 当时能找到的配置
+
+
+7.2
+git clone [url]			//拷贝一个 Git 仓库到本地,远程仓库名字 “origin” 是当你运行 git clone 时默认的远程仓库名字。 如果你运行 git clone -o booyah，那么你默认的远程分支名字将会是 booyah/master。
+$ git clone https://github.com/wjfang90/Test.git
+
+
+7.3
+$ ls -a				//查看项目目录
+
+7.4
+git status  [-s|--short]	//查看在你上次提交之后是否有修改。
+?? LICENSE.txt			//新添加的未跟踪文件前面有 ?? 标记，
+A  lib/git.rb       		//新添加到暂存区中的文件前面有 A 标记，
+MM Rakefile       		//修改过的文件前面有 M 标记。 
+ M README			//你可能注意到了 M 有两个可以出现的位置，出现在右边的 M 表示该文件被修改了但是还没放入暂存区，
+M  lib/simplegit.rb		//出现在靠左边的 M 表示该文件被修改了并放入了暂存区。
+
+
+7.5
+.gitignore			//忽略文件
+文件 .gitignore 的格式规范如下：
+所有空行或者以 ＃ 开头的行都会被 Git 忽略。
+可以使用标准的 glob 模式匹配。
+匹配模式可以以（/）开头防止递归。
+匹配模式可以以（/）结尾指定目录。
+要忽略指定模式以外的文件或目录，可以在模式前加上惊叹号（!）取反。
+
+所谓的 glob 模式是指 shell 所使用的简化了的正则表达式。 
+星号（*）匹配零个或多个任意字符；
+[abc] 匹配任何一个列在方括号中的字符（这个例子要么匹配一个 a，要么匹配一个 b，要么匹配一个 c）；
+问号（?）只匹配一个任意字符；
+如果在方括号中使用短划线分隔两个字符，表示所有在这两个字符范围内的都可以匹配（比如 [0-9] 表示匹配所有 0 到 9 的数字）。 
+使用两个星号（*) 表示匹配任意中间目录，比如`a/**/z` 可以匹配 a/z, a/b/z 或 `a/b/c/z`等
+
+
+7.6
+//git diff 命令显示已写入缓存与已修改但尚未写入缓存的改动的区别。git diff 有两个主要的应用场景。
+git diff			//尚未缓存的改动：请注意，git diff 本身只显示尚未暂存的改动，而不是自上次提交以来所做的所有改动。 所以有时候你一下子暂存了所有更新过的文件后，运行 git diff 后却什么也没有
+git diff --cached		//查看已缓存的改动： 
+git diff HEAD			//查看已缓存的与未缓存的所有改动：
+diff：git diff --stat		//显示摘要而非整个 
+
+
+//以手工的方式找出公共祖先，并对其显式运行 diff 命令
+$ git merge-base contrib master
+36c7dba2c95e6bbb78dfa822519ecfec6e1ca649
+$ git diff 36c7db
+
+$ git diff master...contrib		//仅会显示自当前特性分支与 master 分支的共同祖先起，该分支中的工作
+
+
+$ git diff --word-diff			 //闪烁频率太高，我们觉得 3 秒一次比 1 秒一次更好一些
+diff --git a/blink.ino b/blink.ino
+index 15b9911..a6cc5a5 100644
+--- a/blink.ino
++++ b/blink.ino
+@@ -18,7 +18,7 @@ void setup() {
+// the loop routine runs over and over again forever:
+void loop() {
+  digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+  [-delay(1000);-]{+delay(3000);+}               // wait for a second
+  digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+  [-delay(1000);-]{+delay(3000);+}               // wait for a second
+}
+
+
+Git Diff 的插件版本
+通过图形化的方式或其它格式输出方式的话，可以使用 git difftool 命令来用 Araxis ，emerge 或 vimdiff 等软件输出 diff 分析结果。
+使用 git difftool --tool-help 命令来看你的系统支持哪些 Git Diff 插件。
+
+
+7.7
+//git rm 删除文件		git rm 命令后面可以列出文件或者目录的名字，也可以使用 glob 模式
+git rm <file>			//从工作目录中手工删除文件并从已跟踪文件清单中移除
+$ git rm hello.php 
+
+git rm -f <file>		// -f 表示从缓存区清除
+git rm --cached <file>		//把文件从暂存区域移除，但仍然希望保留在当前工作目录中，换句话说，仅是从跟踪清单中删除
+$ git rm --cached README	//从跟踪清单中删除README文件
+
+$git rm –r *			//递归删除整个目录中的所有子目录和文件
+$ git rm log/\*.log		//删除 log/ 目录下扩展名为 .log 的所有文件
+$ git rm \*~			//删除以 ~ 结尾的所有文件。
+
+
+7.8
+git mv				//移动或重命名一个文件、目录、软连接
+$ git mv README  README.md	//README 重命名为README.md
+
+其实，运行 git mv 就相当于运行了下面三条命令：
+$ mv README.md README
+$ git rm README.md
+$ git add README
+
+注意：用其他工具批处理改名的话，要记得在提交前删除老的文件名，再添加新的文件名
+
+
+7.9
+git log							//查看提交历史记录
+$ git log -p -n						//常用的选项是 -p，用来显示每次提交的内容差异。 你也可以加上 -n 来仅显示最近n次提交
+$ git log --stat					//提交最后有的简略的统计信息
+$ git log --pretty=[oneline | short | full | fuller]	//使用不同于默认格式的方式展示提交历史
+
+$ git log --pretty=oneline
+ca82a6dff817ec66f44342007202690a93763949 changed the version number
+085bb3bcb608e1e8451d4b2432f8ecbe6306e7e7 removed unnecessary test
+a11bef06a3f659402fe7563abf99ad00de2209e6 first commit
+
+$ git log --pretty=format:"%h - %an, %ar : %s"		//定制要显示的记录格式
+ca82a6d - Scott Chacon, 6 years ago : changed the version number
+085bb3b - Scott Chacon, 6 years ago : removed unnecessary test
+a11bef0 - Scott Chacon, 6 years ago : first commit
+
+--pretty=format 常用的选项
+选项	说明
+%H	提交对象（commit）的完整哈希字串
+%h	提交对象的简短哈希字串
+%T	树对象（tree）的完整哈希字串
+%t	树对象的简短哈希字串
+%P	父对象（parent）的完整哈希字串
+%p	父对象的简短哈希字串
+%an	作者（author）的名字
+%ae	作者的电子邮件地址
+%ad	作者修订日期（可以用 --date= 选项定制格式）
+%ar	作者修订日期，按多久以前的方式显示
+%cn	提交者（committer）的名字
+%ce	提交者的电子邮件地址
+%cd	提交日期
+%cr	提交日期，按多久以前的方式显示
+%s	提交说明
+
+
+$ git log --pretty=format:"%h %s" --graph		//当oneline或format与 --graph结合使用时尤其有用。这个选项添加了一些ASCII字符串来形象地展示你的分支、合并历史
+* 2d3acf9 ignore errors from SIGCHLD on trap
+*  5e3ee11 Merge branch 'master' of git://github.com/dustin/grit
+|\
+| * 420eac9 Added a method for getting the current branch.
+* | 30e367c timeout code and tests
+* | 5a09431 add timeout protection to grit
+* | e1193f8 support for heads with slashes in them
+|/
+* d6016bc require time for xmlschema
+*  11d191e Merge branch 'defunkt' into local
+
+
+git log	常用选项                                                                                             
+选项			说明                                                                                                 
+-p			按补丁格式显示每个更新之间的差异。                                                                   
+--stat			显示每次更新的文件修改统计信息。                                                                     
+--shortstat		只显示 --stat 中最后的行数修改添加移除统计。                                                         
+--name-only		仅在提交信息后显示已修改的文件清单。                                                                 
+--name-status		显示新增、修改、删除的文件清单。                                                                     
+--abbrev-commit		仅显示 SHA-1 的前几个字符，而非所有的 40 个字符。                                                    
+--relative-date		使用较短的相对时间显示（比如，“2 weeks ago”）。                                                      
+--graph			显示 ASCII 图形表示的分支合并历史。                                                                  
+--pretty		使用其他格式显示历史提交信息。可用的选项包括 oneline，short，full，fuller 和 format（后跟指定格式）。
+
+
+限制 git log 输出的选项
+选项			说明
+-(n)			仅显示最近的 n 条提交
+--since, --after	仅显示指定时间之后的提交。
+--until, --before	仅显示指定时间之前的提交。
+--author		仅显示指定作者相关的提交。
+--committer		仅显示指定提交者相关的提交。
+--grep			仅显示含指定关键字的提交,注意，得到同时满足两个搜索条件的提交，就必须用 --all-match 选项。否则，满足任意一个条件的提交都会被匹配出来
+-S			仅显示添加或移除了某个关键字的提交
+
+
+$ git log --pretty="%h - %s" --author=gitster --since="2008-10-01" \		//查看 Git 仓库中，2008 年 10 月期间，Junio Hamano 提交的但未合并的测试文件
+   --before="2008-11-01" --no-merges -- t/			
+5610e3b - Fix testcase failure when extended attributes are in use
+acd3b9e - Enhance hold_lock_file_for_{update,append}() API
+f563754 - demonstrate breakage of detached checkout with symbolic link HEAD
+d1a43f2 - reset --hard/read-tree --reset -u: remove unmerged new paths
+51a94af - Fix "checkout --track -b newbranch" on detached HEAD
+b0ad11e - pull: allow "git pull origin $something:$current_branch" into an unborn branch
+
+
+$ git log --no-merges issue54..origin/master  //issue54..origin/master 语法是一个日志过滤器，要求 Git 只显示所有在后面分支（在本例中是 origin/master）但不在前面分支（在本例中是 issue54）的提交的列表
+
+$ git log contrib --not master	//对contrib分支中所有 master 分支尚未包含的提交进行检查
+
+
+7.10
+$ git commit --amend		//重新提交,将暂存区中的文件提交。 如果自上次提交以来你还未做任何修改（例如，在上次提交后马上执行了此命令），那么快照会保持不变，而你所修改的只是提交信息
+
+$ git commit -m 'initial commit'
+$ git add forgotten_file
+$ git commit --amend
+
+
+7.11 已经使用了 git add 缓存了代码
+git reset HEAD <file>		//取消暂存的文件
+$ git reset HEAD CONTRIBUTING.md
+
+已经用 git commit 提交了代码
+$ git reset --hard HEAD^ 来回退到上一次commit的状态。head 和已经add的缓存以及工作空间的所有东西都丢掉
+$ git reset --hard commitid ** 回退到任意版本
+
+$ git reset --soft HEAD^ 来回退到上一次commit的状态。已经add的缓存以及工作空间的所有东西都不变
+$ git reset --mixed HEAD^ 来回退到上一次commit的状态。已经add的缓存也会丢失掉，工作空间的所有东西都不变
+
+
+7.12 未使用 git add 缓存代码时
+git checkout -- <file>		//撤消对文件的修改
+$ git checkout -- CONTRIBUTING.md
+$ git checkout .    //撤消所有文件的修改
+
+
+7.13 远程仓库
+$ git remote [-v]			//查看远程仓库
+$ git remote -v				//显示需要读写远程仓库使用的 Git 保存的简写与其对应的 URL
+origin	https://github.com/schacon/ticgit (fetch)
+origin	https://github.com/schacon/ticgit (push)				
+
+git remote add <shortname> <url>	//添加远程仓库
+
+git fetch <remote-name>			//从远程仓库中抓取与拉取数据，更新本地数据,注意 git fetch 命令会将数据拉取到你的本地仓库 - 它并不会自动合并或修改你当前的工作
+
+git pull				//命令来自动的抓取然后合并远程分支到当前分支
+
+git push [remote-name] [branch-name]	//推送到远程仓库
+$ git push origin master
+
+$ git push -u origin featureB:featureBee //引用规格，将在 featureB 分支上合并的工作推送到服务器上的 featureBee 分支,通过指定本地分支加上冒号（:）加上远程分支的 git push 命令
+					 //注意 -u 标记；这是 --set-upstream 的简写，该标记会为之后轻松地推送与拉取配置分支
+
+git remote show [remote-name]		//查看远程仓库更多信息
+
+git remote rename  <old-name> <newname>	//远程仓库重命名
+$ git remote rename pb paul		//pb 重命名为paul
+
+git remote rm  <remote-name>		//远程仓库的移除
+$ git remote rm paul			//移除paul
+
+
+7.14 打标签
+
+git tag					//以字母顺序列出标签
+$ git tag -l 'v1.8.5*'			//-l 使用特定的模式查找标签
+v1.8.5
+v1.8.5-rc0
+v1.8.5-rc1
+
+git tag -a <tagname> -m 'tag message'	//创建一个附注标签,存储在 Git 数据库中的一个完整对象,可以被校验的；其中包含打标签者的名字、电子邮件地址、日期时间；还有一个标签信息
+$ git tag -a v1.4 -m 'my version 1.4'	//-a 创建一个附注标签，-m 选项指定了一条将会存储在标签中的信息
+
+git show  <tagname>			//可以看到标签信息与对应的提交信息
+$ git show v1.4				//输出显示了打标签者的信息、打标签的日期时间、附注信息，然后显示具体的提交信息
+tag v1.4
+Tagger: Ben Straub <ben@straub.cc>
+Date:   Sat May 3 20:19:12 2014 -0700
+
+my version 1.4
+
+commit ca82a6dff817ec66f44342007202690a93763949
+Author: Scott Chacon <schacon@gee-mail.com>
+Date:   Mon Mar 17 21:52:11 2008 -0700
+
+    changed the version number
+
+
+git tag	 <tagname>			//轻量标签,轻量标签本质上是将提交校验和存储到一个文件中 - 没有保存任何其他信息。 创建轻量标签，不需要使用 -a、-s 或 -m 选项，只需要提供标签名字
+$ git tag v1.4-lw
+$ git tag
+v0.1
+v1.3
+v1.4
+
+
+//后期打标签
+$ git log --pretty=oneline
+166ae0c4d3f420721acbb115cc33848dfcc2121a started write support
+9fceb02d0ae598e95dc970b74767f19372d61af8 updated rakefile
+964f16d36dfccde844893cac5b347e7b3d44abbc commit the todo
+8a5cbc430f1a9c3d00faaeffd07798508422908a updated readme
+
+$ git tag -a v1.2 9fceb02		//“updated rakefile” 提交上打标签，在命令的末尾指定提交的校验和（或部分校验和）
+
+
+//共享标签
+git push origin [tagname]		//默认情况下，git push 命令并不会传送标签到远程仓库服务器上。 在创建完标签后你必须显式地推送标签到共享服务器上。 这个过程就像共享远程分支一样
+$ git push origin --tags		//使用带有 --tags 选项的 git push 命令,所有不在远程仓库服务器上的标签全部传送远程仓库
+Counting objects: 1, done.
+Writing objects: 100% (1/1), 160 bytes | 0 bytes/s, done.
+Total 1 (delta 0), reused 0 (delta 0)
+To git@github.com:schacon/simplegit.git
+ * [new tag]         v1.4 -> v1.4
+ * [new tag]         v1.4-lw -> v1.4-lw
+
+
+
+//检出标签
+Git 中你并不能真的检出一个标签，因为它们并不能像分支一样来回移动.
+想要工作目录与仓库中特定的标签版本完全一样，可以使用 git checkout -b [branchname] [tagname] 在特定的标签上创建一个新分支：
+
+$ git checkout -b version2 v2.0.0
+Switched to a new branch 'version2'
+
+如果在这之后又进行了一次提交，version2 分支会因为改动向前移动了，那么 version2 分支就会和 v2.0.0 标签稍微有些不同
+
+
+
+//git命令别名
+$ git config --global alias.ci commit			commit 添加别名 ci
+
+//Git 中添加你自己的取消暂存别名：
+$ git config --global alias.unstage 'reset HEAD --'     reset HEAD --  添加别名 unstage
+两个命令等价：
+$ git unstage fileA
+$ git reset HEAD -- fileA
+
+//看到最后一次提交
+$ git config --global alias.last 'log -1 HEAD'
+两个命令等价：
+$ git last
+$ git log -1 HEAD
+
+
+
+8.分支管理
+git branch <branchname>		//创建分支
+
+git checkout <branchname>	//切换分支,最好的方法是，在你切换分支之前，保持好一个干净的状态。要留意你的工作目录和暂存区里那些还没有被提交的修改，它可能会和你即将检出的分支产生冲突从而阻止 Git 切换到该分支
+git checkout -b <branchname>    //创建新分支并立即切换到该分支下
+
+$ git branch sc/ruby_client master	//基于 master 分支建立特性分支,sc可以表示贡献特性分支的人名,ruby_client表示特性分支名
+$ git checkout -b sc/ruby_client master
+
+git merge  <branchname>		//合并分支
+在合并的时候，你应该注意到了"快进（fast-forward）"这个词。 由于当前 master 分支所指向的提交是你当前提交（有关 hotfix 的提交）的直接上游，所以 Git 只是简单的将指针向前移动。
+换句话说，当你试图合并两个分支时，如果顺着一个分支走下去能够到达另一个分支，那么 Git 在合并两者的时候，只会简单的将指针向前推进（指针右移），因为这种情况下的合并操作没有需要解决的分歧——这就叫做 “快进（fast-forward）”。
+
+如果你在两个不同的分支中，对同一个文件的同一个部分进行了不同的修改，Git 就没法干净的合并它们。
+会产生冲突，你可以在合并冲突后的任意时刻使用 git status 命令来查看那些因包含合并冲突而处于未合并（unmerged）状态的文件
+
+git branch			//列出本地的分支,注意 分支前的 * 字符：它代表现在检出的那一个分支（也就是说，当前 HEAD 指针所指向的分支）
+git branch -v			//查看每一个分支的最后一次提交
+git branch --merged		//查看哪些分支已经合并到当前分支
+git branch --no-merged		//尚未合并到当前分支的分支
+
+git branch -d <branchname>	//删除已合并的分支
+git branch -D <branchname>	//删除没有合并的分支
+
+$ git remote add upstream https://github.com/schacon/blink	//将源版本库添加为一个远端，并命名为“upstream”（上游）
+
+$ git merge upstream/master					//合并远程分支upstream 到本地分支master
+
+git push <remotename> --delete <branchname>	//删除远程分支
+$ git push origin --delete serverfix
+
+
+8.1解决冲突
+8.1.1
+git status 命令来查看那些因包含合并冲突而处于未合并（unmerged）状态的文件
+
+$ git status
+On branch master
+You have unmerged paths.
+  (fix conflicts and run "git commit")
+
+Unmerged paths:
+  (use "git add <file>..." to mark resolution)
+
+    both modified:      index.html
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+8.1.2
+打开这些包含冲突的文件然后手动解决冲突,出现冲突的文件会包含一些特殊区段，看起来像下面这个样子
+<<<<<<< HEAD:index.html
+<div id="footer">contact : email.support@github.com</div>
+=======
+<div id="footer">
+ please contact us at support@github.com
+</div>
+>>>>>>> iss53:index.html
+
+这表示 HEAD 所指示的版本（也就是你的 master 分支所在的位置，因为你在运行 merge 命令的时候已经检出到了这个分支）在这个区段的上半部分（======= 的上半部分），
+而 iss53 分支所指示的版本在 ======= 的下半部分。 
+
+8.1.3
+运行 git status 来确认所有的合并冲突都已被解决
+$ git status
+On branch master
+All conflicts fixed but you are still merging.
+  (use "git commit" to conclude merge)
+
+Changes to be committed:
+
+    modified:   index.html
+
+8.1.4
+有冲突的的文件暂存
+$ git add index.html
+
+8.1.5
+合并提交
+$ git commit -m '合并提交'
+
+
+如何避免每次输入密码
+a.默认所有都不缓存。 每一次连接都会询问你的用户名和密码。
+
+b.“cache” 模式会将凭证存放在内存中一段时间。 密码永远不会被存储在磁盘中，并且在15分钟后从内存中清除。
+
+c.“store” 模式会将凭证用明文的形式存放在磁盘中，并且永不过期。 这意味着除非你修改了你在 Git 服务器上的密码，否则你永远不需要再次输入你的凭证信息。 这种方式的缺点是你的密码是用明文的方式存放在你的 home 目录下。
+
+d.如果你使用的是 Mac，Git 还有一种 “osxkeychain” 模式，它会将凭证缓存到你系统用户的钥匙串中。 这种方式将凭证存放在磁盘中，并且永不过期，但是是被加密的，这种加密方式与存放 HTTPS 凭证以及 Safari 的自动填写是相同的。
+
+e.如果你使用的是 Windows，你可以安装一个叫做 “winstore” 的辅助工具。 这和上面说的 “osxkeychain” 十分类似，但是是使用 Windows Credential Store 来控制敏感信息。 可以在 https://gitcredentialstore.codeplex.com 下载。
+
+$ git config --global credential.helper cache				//“cache” 模式有 --timeout <seconds> 参数，可以设置后台进程的存活时间（默认是 “900”，也就是 15 分钟）
+$ git config --global credential.helper store --file ~/.my-credentials	//“store” 模式可以接受一个 --file <path> 参数，可以自定义存放密码的文件路径（默认是`~/.git-credentials`）
+
+Git 允许配置多个辅助工具
+C:\Users\YF-INT6
+.gitconfig 配置文件如下：
+
+[credential]
+    helper = store --file /mnt/thumbdrive/.git-credentials
+    helper = cache --timeout 30000
+
+
+git bash 下生成密钥
+$ ssh-keygen -t rsa -C "1119730734@qq.com"
+$ ssh-keygen -t rsa -C "1119730734@qq.com" -f /d/GitDir/GitKey/githubssh/github_id_rsa
+
+输入保存路径
+/d/GitDir/GitKey/ssh/id_rsa
+/d/GitDir/GitKey/githubssh/github_id_rsa
+
+添加私钥
+$ ssh-agent bash
+$ ssh-add /d/GitDir/GitKey/githubssh/github_id_rsa
+
+查看私钥列表
+$ ssh-add -l
+
+清空私钥列表
+$ ssh-add -D
+
+将生成的ssh key拷贝到剪贴板
+clip < ~/ssh/id_rsa.pub
+
+github => 用户 => setting => new ssh key
+
+
+测试
+$ ssh -T git@github.com
+
+
+//分支-基变
+目的是为了确保在向远程分支推送时能保持提交历史的整洁,通过变基，还是通过三方合并，整合的最终结果所指向的快照始终是一样的，只不过提交历史不同
+遵守一条准则：
+不要对在你的仓库外有副本的分支执行变基。
+只要你把变基命令当作是在推送前清理提交使之整洁的工具，并且只在从未推送至共用仓库的提交上执行变基命令，就不会有事
+git rebase <base-branchname> 
+
+$ git checkout experiment
+$ git rebase master
+First, rewinding head to replay your work on top of it...
+Applying: added staged command
+
+
+eg: 从一个特性分支里再分出一个特性分支的提交历史 
+			 
+			 master
+【c1】<-【c2】<-【c5】<-【c6】
+	      ↖		 server	
+		【c3】<-【c4】<-【c10】
+		      ↖
+		        【c8】<-【c9】
+			         client
+
+$ git rebase --onto master server client	// client 中的修改合并到主分支，但暂时并不想合并 server 中的修改
+
+$ git checkout master				// 快进合并 master 分支，使之包含来自 client 分支的修改
+$ git merge client
+
+$ git rebase master server			//将 server 分支中的修改也整合进来
+
+$ git checkout master				//server 中的修改快进合并主分支 master 
+$ git merge server
+
+
+
+9.项目维护
+9.1以邮件发送补丁
+$ git format-patch -M origin/master		//format-patch 命令打印出它创建的补丁文件名字。 -M 开关告诉 Git 查找重命名
+
+$ cat 0001-add-limit-to-log-function.patch
+From 330090432754092d704da8e76ca5c05c198e71a8 Mon Sep 17 00:00:00 2001
+From: Jessica Smith <jessica@example.com>
+Date: Sun, 6 Apr 2008 10:17:23 -0700
+Subject: [PATCH 1/2] add limit to log function
+
+Limit log functionality to the first 20
+
+---
+ lib/simplegit.rb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/lib/simplegit.rb b/lib/simplegit.rb
+index 76f47bc..f9815f1 100644
+--- a/lib/simplegit.rb
++++ b/lib/simplegit.rb
+@@ -14,7 +14,7 @@ class SimpleGit
+   end
+
+   def log(treeish = 'master')
+-    command("git log #{treeish}")
++    command("git log -n 20 #{treeish}")
+   end
+
+   def ls_tree(treeish = 'master')
+--
+2.1.0
+
+
+在 --- 行与补丁开头（diff --git 行）之间添加文本，那么开发者就可以阅读它；但是应用补丁时会排除它。
+
+Git 提供了一个工具帮助你通过 IMAP 发送正确格式化的补丁
+需要在 ~/.gitconfig 文件中设置 imap 区块,配置文件,如果 IMAP 服务器不使用 SSL，最后两行可能没有必要，host 的值会是 imap:// 而不是 imaps://。
+[imap]
+  folder = "[Gmail]/Drafts"
+  host = imaps://imap.gmail.com
+  user = user@gmail.com
+  pass = p4ssw0rd
+  port = 993
+  sslverify = false
+
+使用 git imap-send 将补丁序列放在特定 IMAP 服务器的 Drafts 文件夹中：
+
+$ cat *.patch |git imap-send
+Resolving imap.gmail.com... ok
+Connecting to [74.125.142.109]:993... ok
+Logging in...
+sending 2 messages
+100% (2/2) done
+
+
+SMTP 服务器发送补丁
+
+ ~/.gitconfig 文件的 sendmail 区块
+ [sendemail]
+  smtpencryption = tls
+  smtpserver = smtp.gmail.com
+  smtpuser = user@gmail.com
+  smtpserverport = 587
+
+
+
+9.2应用来自邮件的补丁
+
+git apply --check							//检查补丁是否可以顺利应用
+$ git apply --check 0001-seeing-if-this-helps-the-gem.patch
+
+$ git apply /tmp/patch-ruby-client.patch				//git apply 应用补丁，补丁保存在了 /tmp/patch-ruby-client.patch
+
+patch -p1 命令来应用补丁几乎是等效的，但是这种方式更加严格，相对于 patch 来说，它能够接受的模糊匹配更少。
+apply能够处理 git diff 格式文件所描述的文件添加、删除和重命名操作，而 patch 则不会。 
+最后，git apply 命令采用了一种“全部应用，否则就全部撤销（apply all or abort all）”的模型，即补丁只有全部内容都被应用和完全不被应用两个状态，而 patch 可能会导致补丁文件被部分应用
+
+
+鼓励贡献者使用 format-patch 而不是 diff 来为你生成补丁。 而只有对老式的补丁，你才必须使用 git apply 命令
+$ git am 0001-limit-log-function.patch				//应用一个由 format-patch 命令生成的补丁，你应该使用 git am 命令,git am 是为了读取 mbox 文件而构建的，mbox 是一种用来在单个文本文件中存储一个或多个电子邮件消息的简单纯文本格式
+
+有时候无法顺利地应用补丁，git am将会在所有出现问题的文件内加入冲突标记，就和发生冲突的合并或变基操作一样。 而你解决问题的手段很大程度上也是一样的——即手动编辑那些文件来解决冲突，暂存新的文件，之后运行 git am --resolved 继续应用下一个补丁
+
+
+$ git cherry-pick e43a6fd3e94888d76779ad79fb568ed180e5fcdf		//拣选，将提交 e43a6 拉取到 master 分支
+
+$ git config --global rerere.enabled true				//Rerere 是“重用已记录的冲突解决方案（reuse recorded resolution）”的意思
+
+
+9.3发布打标签
+$ git tag -s v1.5 -m 'my signed 1.5 tag'	
+
+9.3.1为标签签名
+首先找出你所想要的 key,通过导出 key 并通过管道传递给 git hash-object 来直接将 key 导入到 Git 的数据库中，人们可以使用这个 key 来校验所有由你签名的标签
+
+9.3.1.1.找出你所想要的 key
+
+$ gpg --list-keys
+/Users/schacon/.gnupg/pubring.gpg
+---------------------------------
+pub   1024D/F721C45A 2009-02-09 [expires: 2010-02-09]
+uid                  Scott Chacon <schacon@gmail.com>
+sub   2048g/45D02282 2009-02-09 [expires: 2010-02-09]
+
+
+9.3.1.2通过导出 key 并通过管道传递给 git hash-object 来直接将 key 导入到 Git 的数据库中
+$ gpg -a --export F721C45A | git hash-object -w --stdin
+659ef797d181633c87ec71ac3f9ba29fe5775b92
+
+9.3.1.3通过指定由 hash-object 命令给出的新 SHA-1 值来创建一个直接指向它的标签
+$ git tag -a maintainer-pgp-pub 659ef797d181633c87ec71ac3f9ba29fe5775b92
+
+如果你运行 git push --tags 命令，那么 maintainer-pgp-pub 标签将会被共享给所有人。 需要校验标签的人可以通过从数据库中直接拉取 blob 对象并导入到 GPG 中来导入 PGP key：
+$ git show maintainer-pgp-pub | gpg --import
+
+
+9.4生成一个构建号
+git describe		//Git 将会给出一个字符串，它由最近的标签名、自该标签之后的提交数目和你所描述的提交的部分 SHA-1 值构成
+注意 git describe 命令只适用于有注解的标签（即使用 -a 或 -s 选项创建的标签）
+$ git describe master
+v1.6.2-rc1-20-g8c5b85c
+
+
+9.5 发布
+git archive		//为那些不使用 Git 的可怜包们创建一个最新的快照归档
+
+$ git archive master --prefix='project/' | gzip > `git describe master`.tar.gz		// project文件夹名，包含最新的所有文档，git describe master 是压缩包名
+$ ls *.tar.gz
+v1.6.2-rc1-20-g8c5b85c.tar.gz
+
+$ git archive master --prefix='project/' --format=zip > `git describe master`.zip	// project文件夹名，包含最新的所有文档，git describe master 是压缩包名
+
+
+9.6制作提交简报
+$ git shortlog --no-merges master --not v1.0.1
+Chris Wanstrath (8):
+      Add support for annotated tags to Grit::Tag
+      Add packed-refs annotated tag support.
+      Add Grit::Commit#to_patch
+      Update version and History.txt
+      Remove stray `puts`
+      Make ls_tree ignore nils
+
+Tom Preston-Werner (4):
+      fix dates in history
+      dynamic version method
+      Version bump to 1.0.2
+      Regenerated gemspec for version 1.0.2
+
+
+10.添加sshkey至ssh-agent
+
+    1、eval “$(ssh-agent -s)”	确认ssh-agent处于开启状态，打印pid... 表示启用中；
+
+    2、ssh-add ~/.ssh/id_rsa	添加ssh key至ssh agent，此步会要求输入步骤二设置的密码；
+
+  需要注意的是此处可能报错：Could not open a connection to your authentication agent，我的解决办法是关掉当前git  bash窗口，重新以管理员身份运行git bash 即解决问题；
+
+
+
+11 解决冲突方式
+git stash  		暂存当前修改内容
+git pull 
+git stash pop  弹出修改内容
+git add 
+git commit 
+git push 
+
+
+12 还原单个已提交仓库文件
+//获取main.c的版本历史commin id
+git log src/main/main.c  
+//获取内容
+git checkout commitId src/main/main.c
+
+git commmit -m '还原main.c文件'
+git push 
+

@@ -1,0 +1,14 @@
+﻿segment memory占用情况
+
+1.查看一个索引所有segment的memory占用情况:
+GET /_cat/segments/chl?v&h=shard,segment,size,size.memory
+
+2.查看一个node上所有segment占用的memory总和:
+GET /_cat/nodes?v&h=name,port,sm
+
+
+监控fielddata内存使用
+
+GET /_stats/fielddata?fields=*
+GET /_nodes/stats/indices/fielddata?fields=*
+GET /_nodes/stats/indices/fielddata?level=indices&fields=*

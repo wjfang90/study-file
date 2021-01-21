@@ -1,0 +1,43 @@
+内存占用情况建议如下：
+
+低于75％：无后顾之忧。
+75％到85％：如果性能令人满意且负载预计稳定，则可以接受。
+高于85％：现在是采取行动的时候了。减少内存消耗或增加内存。
+
+85％的限制是根据我们的经验得出的。在75％到100％之间没有硬性限制，但是随着填充率的提高，性能会逐渐变差，直到内存用完或由于长时间的垃圾收集暂停而导致群集崩溃。
+
+
+ES的heap是如何被瓜分掉的? 内存消耗大户:
+1.  segment memory
+	减少data node上的segment memory占用呢？ 总结起来有三种方法:
+	1.  删除不用的索引
+	2.  关闭索引 （文件仍然存在于磁盘，只是释放掉内存）。需要的时候可以重新打开。
+	3.  定期对不再更新的索引做optimize (ES2.0以后更改为force merge api)。这Optimze的实质是对segment file强制做合并，可以节省大量的segment memory。
+
+2.  filter cache
+3.  field data cache
+4.  bulk queue
+5.  indexing buffer
+6.  state buffer
+7.  超大搜索聚合结果集的fetch
+8. 对高cardinality字段做terms aggregation
+
+
+小结：
+1.倒排词典的索引需要常驻内存，无法GC，需要监控data node上segment memory增长趋势。
+2.各类缓存，field cache, filter cache, indexing cache, bulk  			queue等等，要设置合理的大小，并且要应该根据最坏的情况来看heap是否够用，也就是各类缓存全部占满的时候，还有heap空间可以分配给其他任务吗？避免采用clear 	cache等“自欺欺人”的方式来释放内存。
+3.避免返回大量结果集的搜索与聚合。确实需要大量拉取数据的场景，可以采用scan & scroll api来实现。
+4.cluster stats驻留内存并无法水平扩展，超大规模集群可以考虑分拆成多个集群通过tribe node连接。
+5.想知道heap够不够，必须结合实际应用场景，并对集群的heap使用情况做持续的监控。
+6.根据监控数据理解内存需求，合理配置各类circuit breaker，将内存溢出风险降低到最低。
+
+
+JVM heap设置 
+系统内存的一半，最大不超过32g
+
+
+
+
+
+
+

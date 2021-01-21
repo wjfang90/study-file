@@ -1,0 +1,9 @@
+http://localhost:9200/_settings
+							PUT
+{
+  "index": {
+    "blocks": {
+      "read_only_allow_delete": "false"
+    }
+  }
+}

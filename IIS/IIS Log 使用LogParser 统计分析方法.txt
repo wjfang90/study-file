@@ -1,0 +1,31 @@
+﻿"D:\Program Files (x86)\Log Parser 2.2\logparser.exe "安装目录
+
+导入SQL Server 
+数据库要手动创建，表可以使用命令创建，服务器名使用IP有问题，换成机器名成功
+
+导入一个日志文件
+"D:\Program Files (x86)\Log Parser 2.2\logparser.exe " "SELECT * FROM D:\W3SVC3\W3SVC3\u_ex190425.log TO IISLog190425" -o:SQL -server:BDYH-YF-AMD7\SQLEXPRESS -driver:"SQL Server" -database:LawKnowedgeLogDb -username:sa -password:sa -createtable:ON
+
+date和time两个字段的UTC时间处理成本地时区时间
+"D:\Program Files (x86)\Log Parser 2.2\logparser.exe " "SELECT TO_LOCALTIME(TO_TIMESTAMP(ADD(TO_STRING(date, 'yyyy-MM-dd '), TO_STRING(time, 'hh:mm:ss')),'yyyy-MM-dd hh:mm:ss')) AS RequestTime, * FROM D:\W3SVC3\W3SVC3\u_ex190425.log TO IISLog190425_date" -o:SQL -server:BDYH-YF-AMD7\SQLEXPRESS -driver:"SQL Server" -database:LawKnowedgeLogDb -username:sa -password:sa -createtable:ON
+
+导入多个日志文件
+"D:\Program Files (x86)\Log Parser 2.2\logparser.exe " "SELECT TO_LOCALTIME(TO_TIMESTAMP(ADD(TO_STRING(date, 'yyyy-MM-dd '), TO_STRING(time, 'hh:mm:ss')),'yyyy-MM-dd hh:mm:ss')) AS RequestTime,* FROM 'D:\W3SVC3\W3SVC3\u_ex*' TO IISLogAll" -o:SQL -server:BDYH-YF-AMD7\SQLEXPRESS -driver:"SQL Server" -database:LawKnowedgeLogDb -username:sa -password:sa -createtable:ON
+
+
+
+导出csv文件 ok
+
+导入一个日志文件
+"D:\Program Files (x86)\Log Parser 2.2\logparser.exe " -i:iisw3c -o:csv "SELECT * FROM 'D:\W3SVC3\W3SVC3\u_ex190425.log ' WHERE cs-Uri-Stem LIKE '%Record%'" >D:/iislog19-04-25.csv
+
+导入多个日志文件
+"D:\Program Files (x86)\Log Parser 2.2\logparser.exe " -i:iisw3c -o:csv "SELECT COUNT(1) FROM 'D:\W3SVC3\W3SVC3\*' WHERE cs-Uri-Stem LIKE '%Record%'" >D:/iislog_Record_all.csv
+
+"D:\Program Files (x86)\Log Parser 2.2\logparser.exe " -i:iisw3c -o:csv "SELECT COUNT(1) FROM 'D:\W3SVC3\W3SVC3\*' WHERE cs-Uri-Stem LIKE '%DownLoadFile%'" >D:/iislog_DownLoadFile_all.csv
+
+
+
+"D:\Program Files (x86)\Log Parser 2.2\logparser.exe " -i:iisw3c -o:csv "SELECT COUNT(1) FROM 'D:\W3SVC3\W3SVC3_GT12\*' WHERE cs-Uri-Stem LIKE '%Record%'" >D:/iislog_Record_2019-12.csv
+
+"D:\Program Files (x86)\Log Parser 2.2\logparser.exe " -i:iisw3c -o:csv "SELECT COUNT(1) FROM 'D:\W3SVC3\W3SVC3_GT12\*' WHERE cs-Uri-Stem LIKE '%DownLoadFile%'" >D:/iislog_DownLoadFile_2019-12.csv

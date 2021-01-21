@@ -1,0 +1,97 @@
+
+ES.1.4.5
+http://192.168.0.165:9200/pfnl/_mapping/pfnl
+
+PUT
+
+{
+  "properties": {
+    "CaseGistMark": {
+      "type": "string"
+    },
+    "CaseGistSort": {
+      "type": "integer"
+    },
+    "isHaveEng": {
+      "type": "integer"
+    },
+    "RelevantPal": {
+      "index": "not_analyzed",
+      "type": "string"
+    },
+    "UpdateTime": {
+      "format": "basic_date",
+      "type": "date"
+    },
+    "GuidingCaseDocNew": {
+       "index": "not_analyzed",
+       "type": "string"
+    }
+    }
+}
+
+
+
+http://210.74.3.241:9229/lar_obj/_mapping/lar_obj/
+
+PUT
+
+{
+  "properties": {
+    "scsqId": {
+      "index": "not_analyzed",
+      "type": "string"
+    },
+    "ReviewerID": {
+      "index": "not_analyzed",
+      "type": "string"
+    }
+  }
+}
+
+
+ES.6.5.4
+text类型字段添加 keyword类型
+
+PUT user_index/user_type/_mapping
+{
+  "properties": {
+      "Title": {
+          "type": "text",
+          "fields": {
+               "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+              }
+           }
+      }
+   }
+}
+
+
+http://192.168.0.151:9215/apy/_mapping/apy
+
+PUT
+
+{
+  "properties": {
+    "PunishmentObjectType": {
+      "type": "keyword"
+    },
+    "PunishmentReason": {
+      "type": "keyword"
+    },
+    "PunishmentAmount": {
+      "type": "double"
+    },
+    "PunishmentQuarter": {      
+      "type": "integer"
+    },
+	 "PunishmentMonth": {      
+      "type": "integer"
+    },
+    "CommonInformation": {
+     "type": "keyword"
+    }
+    }
+}

@@ -1,0 +1,235 @@
+一、安装dotnet sdk 
+
+mkdir -p /usr/local/bin/dotnet && tar zxf dotnet-sdk-2.2.401-linux-x64.tar.gz -C /usr/local/bin/dotnet
+export DOTNET_ROOT=/usr/local/bin/dotnet
+export PATH=$PATH:/usr/local/bin/dotnet
+
+测试dotnet 
+dotnet --version
+
+
+二、安装 nginx
+
+下载nginx
+curl -o  nginx-1.16.1-1.el7.ngx.x86_64.rpm http://nginx.org/packages/centos/7/x86_64/RPMS/nginx-1.16.1-1.el7.ngx.x86_64.rpm
+
+安装
+rpm -ivh nginx-1.16.1-1.el7.ngx.x86_64.rpm
+
+来设置nginx的开机启动（linux宕机、重启会自动运行nginx不需要连上去输入命令）。
+systemctl enable nginx 
+
+启动nginx
+systemctl start nginx 
+
+配置防火墙
+开放80端口
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+
+防火墙配置生效
+firewall-cmd --reload
+
+查看所有打开的端口： 
+firewall-cmd --zone=public --list-ports
+
+测试nginx是否可以访问。
+http://192.168.4.12
+
+
+
+查看nginx配置
+nginx -V 
+--sbin-path=/usr/sbin/nginx 
+--modules-path=/usr/lib64/nginx/modules 
+--conf-path=/etc/nginx/nginx.conf 
+--error-log-path=/var/log/nginx/error.log
+--http-log-path=/var/log/nginx/access.log 
+
+查看配置 /etc/nginx/nginx.conf 
+/etc/nginx/conf.d 目录下的所有.conf 都会生效
+
+查看日志
+/var/log/nginx/error.log
+
+配置nginx对ASP.NET Core应用的转发
+注意：配置多个应用在/etc/nginx/conf.d/ 添加对应的配置文件
+
+添加配置文件 /etc/nginx/conf.d/bdyh.custom.backgroundweb.conf
+vi /etc/nginx/conf.d/bdyh.custom.backgroundweb.conf
+
+文件内容为
+server {
+    listen 8081;
+    location / {
+        proxy_pass http://localhost:5000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection keep-alive;
+        proxy_set_header Host $host:8081;
+        proxy_cache_bypass $http_upgrade;
+    }
+} 
+
+
+重新加载nginx配置
+nginx -s reload 
+
+#验证配置文件的语法
+sudo nginx -t 
+
+开放8081端口
+firewall-cmd --zone=public --add-port=8081/tcp --permanent
+
+防火墙配置生效
+firewall-cmd --reload
+
+在 ASP.NET Core应用程序发布目录运行,否则有可能找不到配置文件
+cd /home/wwwroot/Interface.BackWeb
+dotnet Bdyh.Custom.BackGroundWeb.dll
+
+
+502 Bad Gateway
+
+在linux上访问http://192.168.4.12:8081失败,但是访问http://localhost:5002成功,可以临时关闭selinux
+curl 'http://localhost:5002'
+
+临时关闭selinux
+setenforce 0    ##设置SELinux 成为permissive模式
+setenforce 1    ##设置SELinux 成为enforcing模式
+
+
+
+
+三、nginx添加至SELinux的白名单
+
+在线安装 
+yum install policycoreutils-python
+
+离线安装
+rpm -ivh audit-libs-python-2.8.4-4.el7.x86_64.rpm 
+rpm -ivh checkpolicy-2.5-8.el7.x86_64.rpm 
+rpm -ivh libcgroup-0.41-20.el7.x86_64.rpm
+rpm -ivh libsemanage-python-2.5-14.el7.x86_64.rpm 
+rpm -ivh python-IPy-0.75-6.el7.noarch.rpm 
+rpm -ivh setools-libs-3.3.8-4.el7.x86_64.rpm
+rpm -ivh policycoreutils-python-2.5-29.el7.x86_64.rpm
+rpm -ivh policycoreutils-2.5-29.el7_6.1.x86_64.rpm
+
+
+配置SElinux 白名单，注意：每次添加网站都要重新配置
+mkdir /etc/nginx/policycoreutils-mynginx
+cd /etc/nginx/policycoreutils-mynginx
+
+sudo cat /var/log/audit/audit.log | grep nginx | grep denied | audit2allow -M mynginx
+sudo semodule -i mynginx.pp
+
+
+四、安装配置守护进程supervisor
+
+在线安装
+yum install python-setuptools
+easy_install supervisor
+
+离线安装
+rpm -ivh python-backports-1.0-8.el7.x86_64.rpm 
+rpm -ivh python-ipaddress-1.0.16-2.el7.noarch.rpm 
+rpm -ivh python-backports-ssl_match_hostname-3.5.0.1-1.el7.noarch.rpm 
+rpm -ivh python-setuptools-0.9.8-7.el7.noarch.rpm 
+
+rpm -ivh supervisor-3.1.4-1.el7.noarch.rpm
+
+
+配置Supervisor
+mkdir /etc/supervisor
+echo_supervisord_conf > /etc/supervisor/supervisord.conf
+
+修改supervisord.conf文件，将文件尾部的配置
+vi /etc/supervisor/supervisord.conf
+
+修改内容
+[unix_http_server]
+;file=/tmp/supervisor.sock   ; the path to the socket file
+file=/var/lib/supervisor/supervisor.sock
+
+[supervisord]
+;logfile=/tmp/supervisord.log ; (main log file;default $CWD/supervisord.log)
+logfile=/var/log/supervisord.log
+
+;pidfile=tmp/supervisord.pid;
+pidfile=/var/lib/supervisor/supervisord.pid
+
+[supervisorctl]
+;serverurl=unix:///tmp/supervisor.sock;
+serverurl=unix:///var/lib/supervisor/supervisor.sock
+
+[include]
+files = conf.d/*.conf
+
+
+添加守护的进程配置文件
+mkdir /etc/supervisor/conf.d
+mkdir /var/log/dotnet
+vi /etc/supervisor/conf.d/bdyh.custom.backgroundweb.conf
+
+添加内容
+[program:bdyh.custom.backgroundweb.dll]
+command=/bin/bash -c "dotnet Bdyh.Custom.BackGroundWeb.dll" ; 运行程序的命令
+directory=/home/wwwroot/Interface.BackWeb/ ; 命令执行的目录
+autorestart=true ; 程序意外退出是否自动重启
+stderr_logfile=/var/log/dotnet/bdyh.custom.backgroundweb.err.log ; 错误日志文件
+stdout_logfile=/var/log/dotnet/bdyh.custom.backgroundweb.out.log ; 输出日志文件
+environment=ASPNETCORE_ENVIRONMENT=Production ; 进程环境变量
+user=root ; 进程执行的用户身份
+stopsignal=INT
+
+
+运行supervisord，查看是否生效
+supervisord -c /etc/supervisor/supervisord.conf
+ps -ef | grep backgroundweb
+
+修改supervisor配置，重新加载配置
+supervisorctl reload
+
+进程管理
+supervisorctl start bdyh.custom.backgroundweb.dll
+supervisorctl stop bdyh.custom.backgroundweb.dll
+supervisorctl restart bdyh.custom.backgroundweb.dll
+
+关闭supervisord
+supervisorctl shutdown 
+启动supervisord
+supervisord -c /etc/supervisor/supervisord.conf 
+
+
+
+1. supervisor.sock  not exists
+mkdir /var/lib/supervisor
+sudo touch /var/lib/supervisor/supervisor.sock 
+sudo chmod 777 /var/lib/supervisor/supervisor.sock 
+
+2. supervisor.pid  not exists
+sudo touch /var/lib/supervisor/supervisor.pid 
+sudo chmod 777 /var/lib/supervisor/supervisor.pid 
+
+3. Unlinking stale socket /var/lib/supervisor.sock
+find / -name supervisor.sock
+unlink /var/lib/supervisor/supervisor.sock
+
+
+
+
+the user limit on the total number of inotify instances has been reached
+
+Check current value of max_user_instances:
+$ cat /proc/sys/fs/inotify/max_user_instances
+
+increase that value:
+$ echo 204800 > /proc/sys/fs/inotify/max_user_instances
+
+In order to make that change permanent add a line to /etc/sysctl.conf:
+fs.inotify.max_user_instances = 204800
+
+
+
+
+

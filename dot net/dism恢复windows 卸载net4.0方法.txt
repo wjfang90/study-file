@@ -1,0 +1,9 @@
+核心模式core 变回完整模式 Full
+
+dism /online /enable-feature /all /featurename:servercore-fullserver /featurename:server-gui-shell /featurename:server-gui-mgmt
+
+
+
+切换为核心模式，可以使用“删除角色和功能”来卸载“用户界面和基础结构”功能
+
+dism /online /disable-feature /all /featurename:servercore-fullserver

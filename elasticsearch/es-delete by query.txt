@@ -1,0 +1,66 @@
+elasticsearch version 1.4.5
+
+curl -XDELETE 'localhost:9200/customer/external/_query?pretty' -d '
+{
+  "query": { "match": { "name": "John" } }
+}'
+
+
+es_head
+http://210.74.3.241:9229/lar_obj/lar_obj/_query?pretty' -d '
+													DELETE
+
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "CustomerId": "B0A38207-2EB1-4D06-9074-9ADAAD943EE3"
+          }
+        }
+      ]
+    }
+  }
+}
+
+
+es_head
+http://192.168.0.151:9222/pfnl/_optimize?only_expunge_deletes=true/
+_delete_by_query		POST
+{
+  "query": { 
+    "match": {
+      "message": "some message"
+    }
+  }
+}
+
+优化segment,清空已删除的文档
+$ curl -XPOST 'http://localhost:9200/twitter/_optimize?only_expunge_deletes=true'
+
+
+
+
+
+elasticsearch 6.x
+
+POST twitter/_delete_by_query
+{
+  "query": { 
+    "match": {
+      "message": "some message"
+    }
+  }
+}
+
+
+强制合并segment,清空已删除的文档
+POST /lar/_forcemerge?only_expunge_deletes=true&flush=true
+
+es_head
+http://192.168.0.160:9888/chl,lar/_forcemerge/
+									POST
+{
+  "only_expunge_deletes": "true"
+}

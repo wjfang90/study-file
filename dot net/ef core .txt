@@ -1,0 +1,38 @@
+
+ef core code first 迁移数据库
+注意：
+在 DbContext或子类所在项目上安装迁移package并在包管理控制台执行迁移命令
+修改model 必须重新生成DbContext或子类所在的项目
+
+
+安装迁移工具
+Install-Package Microsoft.EntityFrameworkCore.Tools
+更新迁移工具
+Update-Package Microsoft.EntityFrameworkCore.Tools
+
+
+创建初始迁移
+Add-Migration InitialCreate 
+
+迁移项目有多个DbContext,使用-c 参数
+Add-Migration InitialCreate -c mysqlUnitOfWork
+
+更新数据库
+Update-Database 
+Update-Database -c mysqlUnitOfWork
+
+自定义迁移代码
+Add-Migration [CustomMigrationName]
+
+删除迁移
+Remove-Migration
+
+还原迁移
+Update-Database LastGoodMigration
+
+生成 SQL 脚本
+Script-Migration
+
+生产数据库迁移方法包括：
+使用迁移创建 SQL 脚本，并在部署过程中使用 SQL 脚本。
+在受控的环境中运行 dotnet ef database update。
