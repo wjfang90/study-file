@@ -377,12 +377,20 @@ git merge  <branchname>		//合并分支
 会产生冲突，你可以在合并冲突后的任意时刻使用 git status 命令来查看那些因包含合并冲突而处于未合并（unmerged）状态的文件
 
 git branch			//列出本地的分支,注意 分支前的 * 字符：它代表现在检出的那一个分支（也就是说，当前 HEAD 指针所指向的分支）
+git branch -r       //查看远程所有分支
+git branch -a       //查看本地和远程所有分支
+
 git branch -v			//查看每一个分支的最后一次提交
+
 git branch --merged		//查看哪些分支已经合并到当前分支
 git branch --no-merged		//尚未合并到当前分支的分支
 
 git branch -d <branchname>	//删除已合并的分支
 git branch -D <branchname>	//删除没有合并的分支
+
+git branch -m <oldbranch> <newbranch> //重命名分支
+git branch -M <oldbranch> <newbranch> //强制重命名分支
+git branch -M main 					  //当前分支重命名为main
 
 $ git remote add upstream https://github.com/schacon/blink	//将源版本库添加为一个远端，并命名为“upstream”（上游）
 
@@ -704,4 +712,15 @@ git checkout commitId src/main/main.c
 
 git commmit -m '还原main.c文件'
 git push 
+
+
+13 本地仓库初始化并关联到远程仓库（前提远程仓库已创建）
+
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main //当前分支重命名为main
+git remote add origin https://github.com/wjfang90/EntityFrameworkCoreMovie.git
+git pull origin main --allow-unrelated-histories  //如果没有设置关联分支名称，可以加上参数获取最新代码
+git push -u origin main
 

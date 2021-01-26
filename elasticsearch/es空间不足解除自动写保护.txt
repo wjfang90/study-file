@@ -7,3 +7,11 @@ http://localhost:9200/_settings
     }
   }
 }
+
+
+elasticsearch.yml 配置
+
+cluster.routing.allocation.disk.threshold_enabled: true
+cluster.routing.allocation.disk.watermark.flood_stage: 20gb
+cluster.routing.allocation.disk.watermark.low: 50gb
+cluster.routing.allocation.disk.watermark.high: 30gb
