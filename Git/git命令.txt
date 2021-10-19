@@ -400,6 +400,16 @@ git push <remotename> --delete <branchname>	//删除远程分支
 $ git push origin --delete serverfix
 
 
+如果远程新建了一个分支，本地没有该分支，可以利用 git checkout --track origin/branch_name ，这时本地会新建一个分支名叫 branch_name ，会自动跟踪远程的同名分支 branch_name。
+
+git checkout --track origin/branch_name
+
+
+如果本地新建了一个分支 branch_name，但是在远程没有。这时候 push 和 pull 指令就无法确定该跟踪谁，一般来说我们都会使其跟踪远程同名分支，所以可以利用 git push --set-upstream origin branch_name ，这样就可以自动在远程创建一个 branch_name 分支，然后本地分支会 track 该分支。后面再对该分支使用 push 和 pull 就自动同步。
+
+git push --set-upstream origin branch_name
+
+
 8.1解决冲突
 8.1.1
 git status 命令来查看那些因包含合并冲突而处于未合并（unmerged）状态的文件
@@ -481,6 +491,7 @@ $ ssh-keygen -t rsa -C "1119730734@qq.com" -f /d/GitDir/GitKey/githubssh/github_
 /d/GitDir/GitKey/githubssh/github_id_rsa
 
 添加私钥
+ssh-add 这个命令不是用来永久性的记住你所使用的私钥的。实际上，它的作用只是把你指定的私钥添加到 ssh-agent 所管理的一个 session 当中。而 ssh-agent 是一个用于存储私钥的临时性的 session 服务，也就是说当你重启之后，ssh-agent 服务也就重置了
 $ ssh-agent bash
 $ ssh-add /d/GitDir/GitKey/githubssh/github_id_rsa
 
