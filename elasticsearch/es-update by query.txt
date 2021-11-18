@@ -1,7 +1,7 @@
 ES6.X
 head 
 
-http://192.168.0.168:9446/custom_xjplibrary/
+http://192.168.0.1:9200/custom_xjplibrary/
 _update_by_query					POST
 {
   "script": "ctx._source.Phrase2= 'false'",

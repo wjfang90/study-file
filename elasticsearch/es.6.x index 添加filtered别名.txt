@@ -1,5 +1,5 @@
 税费政策=》 地方库 (法规类别=税收 Category=032) and (区域=广东 IssueDepartment=819)
-http://192.168.0.168:9444/_aliases/
+http://192.168.0.1:9200/_aliases/
 								POST
 {
   "actions": [

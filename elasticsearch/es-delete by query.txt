@@ -7,7 +7,7 @@ curl -XDELETE 'localhost:9200/customer/external/_query?pretty' -d '
 
 
 es_head
-http://210.74.3.241:9229/lar_obj/lar_obj/_query?pretty' -d '
+http://192.168.0.1:9200/lar_obj/lar_obj/_query?pretty' -d '
 													DELETE
 
 {
@@ -26,7 +26,7 @@ http://210.74.3.241:9229/lar_obj/lar_obj/_query?pretty' -d '
 
 
 es_head
-http://192.168.0.151:9222/pfnl/_optimize?only_expunge_deletes=true/
+http://192.168.0.1:9200/pfnl/_optimize?only_expunge_deletes=true/
 _delete_by_query		POST
 {
   "query": { 
@@ -59,7 +59,7 @@ POST twitter/_delete_by_query
 POST /lar/_forcemerge?only_expunge_deletes=true&flush=true
 
 es_head
-http://192.168.0.160:9888/chl,lar/_forcemerge/
+http://192.168.0.1:9200/chl,lar/_forcemerge/
 									POST
 {
   "only_expunge_deletes": "true"
