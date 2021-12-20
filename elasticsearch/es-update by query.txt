@@ -1,6 +1,8 @@
 ES6.X
 head 
 
+注意：CheckFullText excludes 类型字段会更新为空
+
 http://192.168.0.1:9200/custom_xjplibrary/
 _update_by_query					POST
 {
@@ -19,6 +21,24 @@ POST twitter/_update_by_query
   "query": {
     "term": {
       "user": "kimchy"
+    }
+  }
+}
+
+
+POST twitter/_update_by_query
+{
+  "script": {
+    "source": "ctx._source.Phrase4= params.name;ctx._source.Phrase5= params.age",
+    "lang": "painless",
+    "params": {
+      "name": "wang",
+      "age": "test"
+    }
+  },
+  "query": {
+    "match": {
+      "Gid": "bbf0c86a93af4ea989b2d55ad9cfcb0d"
     }
   }
 }
