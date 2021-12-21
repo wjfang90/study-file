@@ -1,6 +1,6 @@
 
 ES.1.4.5
-http://192.168.0.165:9200/pfnl/_mapping/pfnl
+http://192.168.0.1:9200/pfnl/_mapping/pfnl
 
 PUT
 
@@ -32,7 +32,7 @@ PUT
 
 
 
-http://210.74.3.241:9229/lar_obj/_mapping/lar_obj/
+http://192.168.0.1:9200/lar_obj/_mapping/lar_obj/
 
 PUT
 
@@ -69,7 +69,7 @@ PUT user_index/user_type/_mapping
 }
 
 
-http://192.168.0.151:9215/apy/_mapping/apy
+http://192.168.0.1:9200/apy/_mapping/apy
 
 PUT
 
