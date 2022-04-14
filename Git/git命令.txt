@@ -735,3 +735,12 @@ git remote add origin https://github.com/wjfang90/EntityFrameworkCoreMovie.git
 git pull origin main --allow-unrelated-histories  //如果没有设置关联分支名称，可以加上参数获取最新代码
 git push -u origin main
 
+14.删除远程分支
+git push remote_name -d remote_branch_name
+
+$ git push origin -d baiduknowledge
+
+git branch您可以使用该命令删除本地分支，而不是使用用于本地分支的git push命令。
+然后您指定的名称，在大多数情况下是origin.
+-d是删除标志，是--delete.
+remote_branch_name 是要删除的远程分支
