@@ -744,3 +744,7 @@ git branch您可以使用该命令删除本地分支，而不是使用用于本�
 然后您指定的名称，在大多数情况下是origin.
 -d是删除标志，是--delete.
 remote_branch_name 是要删除的远程分支
+
+
+15.安全路径
+git config --global --add safe.directory  'E:/code'
