@@ -330,6 +330,22 @@ To git@github.com:schacon/simplegit.git
  * [new tag]         v1.4 -> v1.4
  * [new tag]         v1.4-lw -> v1.4-lw
 
+把标签推送到服务器
+$ git push origin v1.0   //将v1.0的tag推送到服务器
+$ git push origin refs/tags/v1.0:refs/tags/v1.0  //将v1.0的tag推送到服务器
+
+把本地全部存在的tag推送到服务器
+$ git push origin --tags
+
+其他人如何获取服务器上的标签
+$ git pull   //执行git pull就会把服务器存在的tag标签拉取到本地
+$ git fetch origin tag v1.0
+
+删除远程的tag
+$ git push origin --delete tag v5.0
+
+删除本地的tag
+$ git tag -d v5.0
 
 
 //检出标签
@@ -396,18 +412,40 @@ $ git remote add upstream https://github.com/schacon/blink	//将源版本库添�
 
 $ git merge upstream/master					//合并远程分支upstream 到本地分支master
 
-git push <remotename> --delete <branchname>	//删除远程分支
-$ git push origin --delete serverfix
+
 
 
 如果远程新建了一个分支，本地没有该分支，可以利用 git checkout --track origin/branch_name ，这时本地会新建一个分支名叫 branch_name ，会自动跟踪远程的同名分支 branch_name。
 
+git checkout -b [分支名] [远程名]/[分支名]
+
+track简写
 git checkout --track origin/branch_name
 
 
 如果本地新建了一个分支 branch_name，但是在远程没有。这时候 push 和 pull 指令就无法确定该跟踪谁，一般来说我们都会使其跟踪远程同名分支，所以可以利用 git push --set-upstream origin branch_name ，这样就可以自动在远程创建一个 branch_name 分支，然后本地分支会 track 该分支。后面再对该分支使用 push 和 pull 就自动同步。
 
 git push --set-upstream origin branch_name
+
+
+远程分支管理
+
+新建远程分支
+1.新建本地分支
+git checkout -b branch_name
+
+2.推送到远程仓库
+git push origin local_branch_name:remote_branch_name
+
+远程分支和本地分支同名，简写为
+git push origin branch_name
+
+
+删除远程分支
+git push <remotename> --delete <branchname>	//删除远程分支
+git push origin -delete branch_name
+
+$ git push origin --delete serverfix
 
 
 8.1解决冲突
@@ -746,5 +784,12 @@ git branch您可以使用该命令删除本地分支，而不是使用用于本�
 remote_branch_name 是要删除的远程分支
 
 
-15.安全路径
-git config --global --add safe.directory  'E:/code'
+15.安全目录
+C:\Users\User\.gitconfig  //全局配置
+
+git config --global --add safe.directory  'E:/code' 添加安全目录
+
+git config --global --add safe.directory "*"   //禁用安全目录，windows 用"*",linux 用'*'
+
+git config --global --unset safe.directory  //删除安全目录配置
+
