@@ -88,6 +88,13 @@ cd /home/wwwroot/Interface.BackWeb
 dotnet Bdyh.Custom.BackGroundWeb.dll
 
 
+
+查看dotnet 进程是否运行
+
+ps aux|grep dotnet
+ps -ef|grep dotnet
+
+
 502 Bad Gateway
 
 在linux上访问http://192.168.4.12:8081失败,但是访问http://localhost:5002成功,可以临时关闭selinux

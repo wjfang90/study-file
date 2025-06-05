@@ -34,6 +34,10 @@ documents 主要是软件包的文档
 4.4 
 nano 文本编辑器
 
+vi 在命令模式 查找内容
+/path 回车，向下查找path，输入n查找下一个
+?path 回车，向上查找path，输入n查找上一个
+
 4.5 
 关机
 who 查看在线用户
@@ -260,6 +264,9 @@ n			重复前一个查找（与/或?有关）
 N			反向重复前一个查找（与/或?有关） 	
 g			前进到这个数据第一行
 G			前进到这个数据最后一行
+
+less -N 文件名  左侧显示行号
+
 
 数据截取
 【head】	只看前几行
@@ -506,52 +513,74 @@ locate [-ir] keyword	keyword 可以是文件名的一部分
 
 7.Linux磁盘与文件系统管理
 
+top  查看cpu 内存占用率
+free -h 查看内存空间
+df -h 查看硬盘空间
+
+cat /etc/redhat-release 查看CentOS 版本
+
+uname -m  查看系统架构，x86或 arm64
+
+
+8. systemctl 管理服务
+请注意，使用 systemctl 管理服务时，需要具有管理员权限。因此，命令前通常需要加上 sudo。在实际操作中，请确保将 service_name 替换为您要管理的服务的实际名称。
+
+启动服务：
+sudo systemctl start service_name
+
+停止服务：
+sudo systemctl stop service_name
+
+重启服务：
+sudo systemctl restart service_name
+
+重新加载服务：
+sudo systemctl reload service_name
+
+查看服务状态：
+systemctl status service_name
+
+在启动时启用服务：
+sudo systemctl enable service_name
+
+在启动时禁用服务：
+sudo systemctl disable service_name
+
+查看所有服务及其状态：
+systemctl list-units --type=service
+
+查看已启用服务：
+systemctl list-unit-files | grep enabled
+
+
+9.创建用户
+创建用户
+sudo useradd wjfangftp
+
+给用户wjfangftp设置密码
+sudo passwd wjfangftp
+
+创建用户的家目录（可选）
+sudo mkdir /home/wjfangftp
+sudo chown wjfangftp:wjfangftp /home/wjfangftp
+
+授予新用户 SCP 的权限,新用户添加到 wheel 组中，该组默认具有执行特权操作的权限
+sudo usermod -aG wheel wjfangftp
+
+重启 SSH 服务
+sudo systemctl restart sshd
+
+
+10 scp 上传文件
+
+scp -r -P 22 /path/to/local/file username@remote:/path/to/destination
+
+scp /path/to/local/file.txt wjfangftp@10.10.80.71:/home/wjfangftp/
+scp d:/tblog_fsk_202308.csv wangjianfang@10.10.80.71:/home/wangjianfang/
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+10. unzip 解压 
+unzip test.zip -d /path/to/destination
 
 

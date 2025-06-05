@@ -414,6 +414,18 @@ $ git merge upstream/master					//合并远程分支upstream 到本地分支mast
 
 
 
+main合并到dev分支
+
+git checkout dev			//切换到dev
+git switch dev 				//切换到dev 新版
+git fetch origin 			//拉取main分支最新代码
+git merge origin/main 		//合并main到 dev
+# (如有冲突解决冲突)
+git push origin dev        //推送到远程分支
+
+
+
+
 
 如果远程新建了一个分支，本地没有该分支，可以利用 git checkout --track origin/branch_name ，这时本地会新建一个分支名叫 branch_name ，会自动跟踪远程的同名分支 branch_name。
 
@@ -522,11 +534,11 @@ C:\Users\YF-INT6
 
 git bash 下生成密钥
 $ ssh-keygen -t rsa -C "1119730734@qq.com"
-$ ssh-keygen -t rsa -C "1119730734@qq.com" -f /d/GitDir/GitKey/githubssh/github_id_rsa
+$ ssh-keygen -t rsa -C "1119730734@qq.com" -f /e/GitDir/GitKey/githubssh/github_id_rsa
 
 输入保存路径
-/d/GitDir/GitKey/ssh/id_rsa
-/d/GitDir/GitKey/githubssh/github_id_rsa
+/e/GitDir/GitKey/ssh/id_rsa
+/e/GitDir/GitKey/githubssh/github_id_rsa
 
 添加私钥
 ssh-add 这个命令不是用来永久性的记住你所使用的私钥的。实际上，它的作用只是把你指定的私钥添加到 ssh-agent 所管理的一个 session 当中。而 ssh-agent 是一个用于存储私钥的临时性的 session 服务，也就是说当你重启之后，ssh-agent 服务也就重置了
@@ -792,4 +804,15 @@ git config --global --add safe.directory  'E:/code' 添加安全目录
 git config --global --add safe.directory "*"   //禁用安全目录，windows 用"*",linux 用'*'
 
 git config --global --unset safe.directory  //删除安全目录配置
+
+
+16. gitignore 
+
+解决 gitignore 配置 不生效的问题
+git rm -r --cached .    //删除了文件index，从track状态变为untrack状态，执行后会看到项目下所有文件
+
+git add .			//当前目录下的所有文件再add到index，注意这时候.gitignore文件就会起作用，里面配置的文件类型，将不会被add到index。同时文件上也不会出现?这个符号。
+					//可以这样理解，凡是在.gitignore中标记的文件，就会默认为本地文件，跟git无关，无论执行什么git命令，它都不会被执行。
+
+git commit -m 'update gitignore'	
 

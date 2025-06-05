@@ -1,0 +1,6 @@
+docker compose 是新版本以插件方式安装时的命令,Docker 19.03 及以上版本才能使用。是 Docker 命令行工具的一部分,更加紧密地集成在 Docker 生态中
+docker-compose 是一个独立的工具,需要单独安装和配置，可以在任何支持 Docker 的系统上使用,不受 Docker 版本的限制。
+
+在 docker-compose.yml文件目录执行命令
+
+docker-compose up -d  #后台启动并运行所有的容器 

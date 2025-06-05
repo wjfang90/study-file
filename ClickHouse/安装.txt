@@ -1,0 +1,27 @@
+RPM安装包
+推荐使用CentOS、RedHat和所有其他基于rpm的Linux发行版的官方预编译rpm包。
+
+sudo yum install -y yum-utils
+sudo yum-config-manager --add-repo https://packages.clickhouse.com/rpm/clickhouse.repo
+sudo yum install -y clickhouse-server clickhouse-client
+
+sudo /etc/init.d/clickhouse-server start
+clickhouse-client # or "clickhouse-client --password" if you set up a password.
+
+
+
+
+Password for default user is empty string. 
+See /etc/clickhouse-server/users.xml and /etc/clickhouse-server/users.d to change it
+
+/etc/clickhouse-server/config.xml has /var/lib/clickhouse/ as data path.
+/etc/clickhouse-server/config.xml has /var/log/clickhouse-server/ as log path
+
+
+启动服务后，您可以使用命令行客户端连接到它:
+$ clickhouse-client
+
+默认情况下，使用default用户并不携带密码连接到localhost:9000
+http 默认端口  8123
+
+clickhouse-client --host=192.168.4.12 --port=9000
