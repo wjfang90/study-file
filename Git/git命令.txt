@@ -534,14 +534,15 @@ C:\Users\YF-INT6
 
 git bash 下生成密钥
 $ ssh-keygen -t rsa -C "1119730734@qq.com"
-$ ssh-keygen -t rsa -C "1119730734@qq.com" -f /e/GitDir/GitKey/githubssh/github_id_rsa
+$ ssh-keygen -t rsa -C "1119730734@qq.com" -f /e/GitDir/GitKey/githubssh/github_id_rsa  旧算法
+$ ssh-keygen -t ed25519 -C 1119730734@qq.com -f /e/GitDir/GitKey/githubssh/github_id_ed25519  新算法
 
-输入保存路径
-/e/GitDir/GitKey/ssh/id_rsa
-/e/GitDir/GitKey/githubssh/github_id_rsa
 
 添加私钥
-ssh-add 这个命令不是用来永久性的记住你所使用的私钥的。实际上，它的作用只是把你指定的私钥添加到 ssh-agent 所管理的一个 session 当中。而 ssh-agent 是一个用于存储私钥的临时性的 session 服务，也就是说当你重启之后，ssh-agent 服务也就重置了
+ssh-add 这个命令不是用来永久性的记住你所使用的私钥的。实际上，它的作用只是把你指定的私钥添加到 ssh-agent 所管理的一个 session 当中。
+而 ssh-agent 是一个用于存储私钥的临时性的 session 服务，也就是说当你重启之后，ssh-agent 服务也就重置了
+
+$ eval “$(ssh-agent -s)”	确认ssh-agent处于开启状态，打印pid... 表示启用中
 $ ssh-agent bash
 $ ssh-add /d/GitDir/GitKey/githubssh/github_id_rsa
 
@@ -556,6 +557,15 @@ clip < ~/ssh/id_rsa.pub
 
 github => 用户 => setting => new ssh key
 
+
+在.ssh目录添加config文件
+内容如下，IdentityFile目录为~/.ssh，需要把github_id_ed25519 和github_id_ed25519.pub 复制到~/.ssh/
+
+Host github.com
+    HostName github.com
+    User git
+	PreferredAuthentications publickey 
+    IdentityFile ~/.ssh/github_id_ed25519
 
 测试
 $ ssh -T git@github.com
@@ -751,10 +761,12 @@ Tom Preston-Werner (4):
     1、eval “$(ssh-agent -s)”	确认ssh-agent处于开启状态，打印pid... 表示启用中；
 
     2、ssh-add ~/.ssh/id_rsa	添加ssh key至ssh agent，此步会要求输入步骤二设置的密码；
+	   ssh-add ~/.ssh/github_id_ed25519   github不支持rsa算法了，使用新的
 
   需要注意的是此处可能报错：Could not open a connection to your authentication agent，我的解决办法是关掉当前git  bash窗口，重新以管理员身份运行git bash 即解决问题；
 
-
+  3.验证是否成功
+	ssh -T git@github.com
 
 11 解决冲突方式
 git stash  		暂存当前修改内容
