@@ -1,0 +1,37 @@
+---
+name: my-skill
+description: Brief description under 1024 characters
+license: MIT
+allowed-tools: web_search file_write
+---
+ 
+# Skill Name
+ 
+## Overview
+Clear explanation of what this skill does.
+ 
+## When to Use
+- Situation 1
+- Situation 2
+ 
+## Prerequisites
+- Required tools or dependencies
+ 
+## Instructions
+Step-by-step workflow:
+ 
+1. First step
+2. Second step
+3. Third step
+ 
+## Available Scripts
+ 
+### script.py
+- **Purpose**: What it does
+- **Arguments**: `--input <file> --output <file>`
+- **Example**: `python script.py --input data.csv --output result.json`
+ 
+## Examples
+ 
+### Example 1: Basic Usage
+...

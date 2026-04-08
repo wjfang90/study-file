@@ -1,0 +1,11 @@
+# 推荐的技能目录结构
+my-skill/
+├── SKILL.md              # 必需：技能定义文件
+├── README.md             # 可选：详细文档
+├── scripts/              # 脚本文件
+│   ├── main.py
+│   └── utils.py
+├── templates/            # 模板文件
+│   └── output.md
+└── config/               # 配置文件
+    └── settings.json

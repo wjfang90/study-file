@@ -12,6 +12,8 @@ git add --patch			//来部分暂存文件
 
 $ git add 404.html
 
+git add . 将所有修改的文件添加到缓存区
+
 
 3.将缓存区内容添加到仓库中（提交到了 HEAD，但是还没到你的仓库）
 $ git commit -m "add 3 files."
