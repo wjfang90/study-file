@@ -274,6 +274,15 @@ PUT /index_name/_mapping
 - `analyzer`:用于指定在对`text`字段进行索引或搜索时所使用的文本分析工具。只有`text`类型字段支持。不能更新一个已经存在的字段的`analyzer`
 - `doc_values`:是一种在文档索引时构建的列式存储方式的磁盘数据结构，一种数据访问模式。与`_source`字段存储相同的值，排序和聚合操作提高效率。除`text`和`annoteated text`外，所有字段类型都支持   `doc values`:默认为`true`，为`false`，无法进行排序和聚合操作、`script query`，可以节省磁盘存储空间。
 - `format`: Elasticsearch 使用一组预配置的格式来识别并解析json中的日期字符串，转换为`UTC` 时间“自纪元以来经过的毫秒数”的长整型值。预置格式可以使用`format`参数指定。
+- `term_vector`:包含了分析过程中生成的`terms`相关信息
+  - `no`: 不存储任何信息
+  - `yes`: 仅存储`terms`
+  - `with_positions`: 存储`terms`和位置
+  - `with_offsets`: 存储`terms`和字符偏移量
+  - `with_positions_offsets`: 存储`terms`、位置、字符偏移量
+  - `with_positions_payloads`: 存储`terms`、位置和每个术语位置相关联的用户自定义二进制数据。
+  - `with_positions_offsets_payloads`: 存储`terms`、位置、字符偏移量和每个术语位置相关联的用户自定义二进制数据。
+
 - `ignore_above`: 长度超过`ignore_above`值的字符串将不会被建立索引或存储。对于字符串数组，`ignore_above`会分别应用于每个数组元素。最大是Lucene为32766，非ascii中的UTF8字符应该除以4。
 - `null_value`：空值无法进行索引或搜索。当某个字段被设置为`null`（或为空数组或包含多个`null`值的数组）时，系统会将其视为该字段没有值。`null_value`只影响数据的索引方式，不会修改`_source`文档。
 - `search_analyzer`:默认情况下，查询和索引使用相同的分词器，在使用同义词查询时，可通过 `search_analyzer` 设置进行覆盖。
