@@ -308,47 +308,52 @@ PUT /index_name/_mapping
 `常用类型`
 
 - `boolean`: 布尔型
-- `binary`: 二进制型，二进制值以 Base64 字符串形式编码
-- `text`: 文本类型，用于全文搜索
-- `keywords`
+- `binary`: 二进制型，二进制值以 Base64 字符串形式编码，默认情况下不会被存储，也无法进行搜索。
+- `text type family` 默认不支持排序、聚合、脚本。mappings启用`fielddata:true`支持，但会消耗大量内存，不建议使用。建议使用`fields mappings`设置多个字段类型。
+  - `text`: 文本类型，用于全文搜索
+  - `match_only_text`: 仅匹配文本类型，禁用评分功能，最适合用于对日志消息索引。只能使用默认分词器，不支持`span query`,可以使用`interval query`。
+- `keywords type family`
   - `keyword`: 关键字类型，用于精确匹配
   - `constant_keyword`: 常量关键字类型，用于精确匹配
   - `wildcard`: 通配符类型，用于模糊匹配
 - `numbers`
-  - `integer`: 整数类型
-  - `short`: 短整型
-  - `byte`: 字节型
-  - `long`: 整数类型
-  - `double`: 双精度浮点型
-  - `float`: 浮点型
-  - `half_float`: 半精度浮点型
-  - `scaled_float`: 缩放浮点型
+  - `long`: 64位长整数类型
+  - `integer`: 32位整数类型
+  - `short`: 16位短整型
+  - `byte`: 8位整数，字节型
+  - `double`: 双精度64位浮点型
+  - `float`: 单精度32位浮点型
+  - `half_float`: 半精度16位浮点型
+  - `scaled_float`: 缩放浮点型，由一个 `long` 数据类型表示，并通过固定的双精度缩放因子进行缩放。
+  - `unsigned_long`: 无符号64位长整数类型
 - `dates`
-  - `date`: 日期类型
-  - `date_nanos`: 日期纳秒类型
-- `alias`: 别名类型，给已存在的字段添加别名
+  - `date`: 日期类型，现有的日期数据类型以毫秒为单位存储日期。
+  - `date_nanos`: 日期纳秒类型，数据类型以纳秒为单位存储日期。聚类依旧使用毫秒。
+- `arrays`: 数组类型，支持任何数据类型，包括嵌套数组。不需要显示`mapping`设置，但是必须是相同的数据类型。对象数组不支持检索单个对象，使用`nested`类型代替。
 
 `object和关系类型`
 
 - `object`: json对象类型
 - `nested`: 嵌套json对象类型
-- `join`: 关系类型，用于定义父子关系
-- `flattened`:将整个 JSON 对象作为单一字段值
+- `join`: 关系类型，用于定义父子关系。唯一适用的情况是当数据包含一对多关系时，且其中一个实体的数量远多于另一个实体。
+- `flattened`:扁平化类型，将整个 JSON 对象作为单一字段值。适用于对具有大量或未知数量唯一键的对象进行索引。
 
 `结构化数据类型`
 
 - `range`
+  - `integer_range`: 整数范围类型
   - `long_range`: 整数范围类型
+  - `float_range`: 浮点数范围类型
   - `double_range`: 双精度浮点数范围类型
   - `date_range`: 日期范围类型
   - `ip_range`: ip范围类型
-- `ip`: ip类型
+- `ip`: ip类型，ipv4和ipv6
 - `nurmur3`: 哈希类型
 - `version`: 软件版本类型，支持`Semantic Versioning`
 
 `聚合数据类型`
 
-- `histogram`: 直方图类型
+- `histogram`: 直方图类型，存储表示直方图的预聚合数值数据的字段
 - `aggregate_metric_double`:预聚合的度量值
 
 `文本检索类型`
@@ -359,7 +364,7 @@ PUT /index_name/_mapping
 - `annotated-text`: 注释文本类型
 - `completion`: 自动补全类型
 - `search_as_you_type`: 搜索时自动补全类型
-- `token_count`: 计数类型
+- `token_count`: 计数类型，接收一个字符串，使用`analyzer`分析，返回`token`数量。
 
 `文档排名类型`
 
@@ -374,7 +379,9 @@ PUT /index_name/_mapping
 - `geo_shape`: 地理位置形状类型
 - `point`: 点类型
 - `shape`: 形状类型
-- `percolator`：字段类型可将JSON结构解析为原生查询语句并存储该查询语句，从而使Percolate查询能够利用该语句来匹配指定文档
+- `percolator`：渗透器字段类型可将JSON结构解析为原生查询语句并存储该查询语句，从而使`Percolate`查询能够利用该语句来匹配指定文档
+- `alias`: 字段别名类型，给已存在的字段添加别名，查询、聚合和排序字段、脚本，也可用于请求 `docvalue_fields`、`stored_fields`、建议结果及高亮显示内容。字段功能的`field capabilities`。字段类型不能是`object`或者另一个别名字段，不支持能过字段别名索引数据，查询不支持`terms`、`geo_shape`、`more_like_this`。
+- `completion`：类型补全类型，使用补全建议功能时使用。
 
 ### 2.2.5 metadata字段
 
