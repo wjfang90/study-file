@@ -698,7 +698,52 @@ $ git config --global rerere.enabled true				//Rerere 是“重用已记录的�
 
 
 9.3发布打标签
-$ git tag -s v1.5 -m 'my signed 1.5 tag'	
+
+创建标签
+
+轻量标签
+$ git tag v1.0.0
+
+附注标签
+$ git tag -a v1.0.0 -m "正式发布版本"
+
+$ git tag -s v1.5 -m 'my signed 1.5 tag'
+
+删除本地标签
+git tag -d v1.0.0
+
+删除远程标签
+git push origin --delete v1.0.0
+
+删除远程标签 - 旧写法
+git push origin :refs/tags/v1.0.0
+
+推送单个标签
+git push origin v1.0.0
+
+推送所有标签
+git push origin --tags
+
+
+切换到某个 Tag
+git checkout v1.0.0
+
+基于 Tag 创建分支 - 新写法
+git switch -c hotfix/v1.0.1 v1.0.0
+
+基于 Tag 创建分支 - 旧写法
+git checkout -b hotfix/v1.0.1 v1.0.0
+
+重命名 Tag流程
+1.删除旧标签
+2.新建新标签
+3.推送新标签
+4.删除远程旧标签
+
+
+推送分支时顺便推送可达标签，--follow-tags 只会推送 附注标签
+git push origin main --follow-tags
+	
 
 9.3.1为标签签名
 首先找出你所想要的 key,通过导出 key 并通过管道传递给 git hash-object 来直接将 key 导入到 Git 的数据库中，人们可以使用这个 key 来校验所有由你签名的标签

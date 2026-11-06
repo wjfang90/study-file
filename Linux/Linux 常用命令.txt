@@ -583,4 +583,18 @@ scp d:/tblog_fsk_202308.csv wangjianfang@10.10.80.71:/home/wangjianfang/
 10. unzip 解压 
 unzip test.zip -d /path/to/destination
 
+11 tar 压缩归档 
+
+c ：create（创建归档）
+x ：extract（解压归档）
+t ：list（列出归档内容）
+f FILE：指定归档文件名（必须放在最后）
+v ：verbose（显示详细过程）
+C DIR：切换目录后再操作（避免归档包含绝对路径）
+r ：append（向已有 tar 追加文件）
+u ：update（只追加更新的文件）
+--exclude=PATTERN：排除匹配的文件/目录
+
+tar -czf test.tar.gz file1 file2 dir/
+
 
